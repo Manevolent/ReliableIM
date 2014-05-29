@@ -10,7 +10,12 @@ namespace ReliableIM.Network.Protocol
     {
         private Dictionary<byte, Type> packetMap = new Dictionary<Byte, Type>();
 
-        public void registerPacket(byte packetId, Type classType)
+        /// <summary>
+        /// Registers a packet into this packet factory.
+        /// </summary>
+        /// <param name="packetId">Packet ID to bind to.</param>
+        /// <param name="classType">Class type, extending T, to bind to the packet ID.</param>
+        public void RegisterPacket(byte packetId, Type classType)
         {
             if (!classType.IsSubclassOf(typeof(T)))
                 throw new NotSupportedException();
@@ -23,7 +28,7 @@ namespace ReliableIM.Network.Protocol
         /// </summary>
         /// <param name="packetId">Packet ID, presumably read from the network stream</param>
         /// <returns>A new packet from the given ID, otherwise null if the ID is not known.</returns>
-        public T createFromId(byte packetId)
+        public T CreateFromId(byte packetId)
         {
             if (!packetMap.ContainsKey(packetId))
                 return default(T);

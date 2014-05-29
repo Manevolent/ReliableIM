@@ -116,6 +116,9 @@ namespace ReliableIM.Network.Protocol.SSL
             if (!baseSocket.IsConnected())
                 throw new InvalidOperationException("Cannot authenticate SSL because the underlying socket is not connected.");
 
+            if (sslStream.IsAuthenticated)
+                throw new InvalidOperationException("Cannot authenticate SSL because the connection has already been authenticated.");
+
             sslStream.AuthenticateAsClient(host);
         }
 
@@ -127,6 +130,9 @@ namespace ReliableIM.Network.Protocol.SSL
         {
             if (!baseSocket.IsConnected())
                 throw new InvalidOperationException("Cannot authenticate SSL because the underlying socket is not connected.");
+
+            if (sslStream.IsAuthenticated)
+                throw new InvalidOperationException("Cannot authenticate SSL because the connection has already been authenticated.");
 
             sslStream.AuthenticateAsServer(serverCertificate);
         }

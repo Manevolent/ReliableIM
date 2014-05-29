@@ -44,6 +44,8 @@
   <ItemGroup>
     <Compile Include="Contact\EnumContactStatus.cs" />
     <Compile Include="Contact\IContact.cs" />
+    <Compile Include="Event\Event.cs" />
+    <Compile Include="Event\IEventListener.cs" />
     <Compile Include="Message\IMessage.cs" />
     <Compile Include="Network\IMessageReceiver.cs" />
     <Compile Include="Network\IMessageSender.cs" />
@@ -51,6 +53,10 @@
     <Compile Include="Network\IMessageEndpoint.cs" />
     <Compile Include="Network\Protocol\Packet.cs" />
     <Compile Include="Network\Protocol\PacketFactory.cs" />
+    <Compile Include="Network\Protocol\RIM\Handler\Authorized\RimSocketHandlerAuthorized.cs" />
+    <Compile Include="Network\Protocol\RIM\Handler\RimSocketHandler.cs" />
+    <Compile Include="Network\Protocol\RIM\Handler\Unauthorized\RimSocketHandlerUnauthorized.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\RimPacket255Disconnect.cs" />
     <Compile Include="Network\Protocol\RIM\Packet\RimPacket2Connect.cs" />
     <Compile Include="Network\Protocol\RIM\Packet\RimPacket1Ping.cs" />
     <Compile Include="Network\Protocol\RIM\RimListener.cs" />
@@ -69,7 +75,6 @@
     <Compile Include="Network\Protocol\UDT\UdtSocket.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Network\Protocol\RIM\Handler\" />
     <Folder Include="Properties\" />
     <Folder Include="Security\" />
   </ItemGroup>
