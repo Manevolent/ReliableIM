@@ -1,0 +1,1502 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        "UdtProtocol"
+    </assembly>
+    <members>
+        <member name="P:Udt.Ack2Packet.SequenceNumber">
+            <summary>
+Acknowledgement (ACK) packet sequence number. Default value is 0.
+</summary>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="T:Udt.Ack2Packet">
+            <summary>
+UDT protocol acknowledgement of acknowledgement (ACK-2) control packet.
+</summary>
+        </member>
+        <member name="T:Udt.ShutdownPacket">
+            <summary>
+UDT protocol shutdown control packet.
+</summary>
+        </member>
+        <member name="P:Udt.ErrorPacket.ErrorCode">
+            <summary>
+Get or set the error code. Default value is 0.
+</summary>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="T:Udt.ErrorPacket">
+            <summary>
+UDT protocol error signal control packet.
+</summary>
+        </member>
+        <member name="T:Udt.CongestionPacket">
+            <summary>
+UDT protocol congestion/delay warning control packet.
+</summary>
+        </member>
+        <member name="F:Udt.DataPacket.MaxMessageNumber">
+            <summary>
+Maximum allowed value for <see cref="P:Udt.DataPacket.MessageNumber" />.
+</summary>
+            <value>536,870,911 (0x1FFFFFFF)</value>
+        </member>
+        <member name="M:Udt.DataPacket.Write(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+Write to the packet payload data.
+</summary>
+            <remarks>
+If the sum of <paramref name="dataOffset" /> and <paramref name="bufferCount" />
+is greater than <see cref="P:Udt.DataPacket.DataLength" />, the packet's payload space
+is expanded as needed.
+</remarks>
+            <param name="dataOffset">Offset into the packet data to start writing to.</param>
+            <param name="buffer">Buffer to copy packet data from.</param>
+            <param name="bufferOffset">Offset into the <paramref name="buffer" /> to start reading.</param>
+            <param name="bufferCount">Maximum number of bytes to read from <paramref name="buffer" />.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="buffer" /> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="dataOffset" /> is less than 0.
+- or -
+If <paramref name="bufferOffset" /> or <paramref name="bufferCount" /> is less than 0
+</exception>
+            <exception cref="T:System.ArgumentException">If the sum of <paramref name="bufferOffset" /> and <paramref name="bufferCount" /> is larger than the <paramref name="buffer" /> length.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="M:Udt.DataPacket.Read(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+Read from the packet payload data.
+</summary>
+            <param name="dataOffset">Offset into the packet data to start reading at.</param>
+            <param name="buffer">Buffer to read packet data into.</param>
+            <param name="bufferOffset">Offset into the <paramref name="buffer" /> to copy data to.</param>
+            <param name="bufferCount">Maximum number of bytes to copy from the packet.</param>
+            <returns>Number of bytes read into <paramref name="buffer" />.</returns>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="buffer" /> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="dataOffset" /> is less than 0 or greater than <see cref="P:Udt.DataPacket.DataLength" />.
+- or -
+If <paramref name="bufferOffset" /> or <paramref name="bufferCount" /> is less than 0
+</exception>
+            <exception cref="T:System.ArgumentException">If the sum of <paramref name="bufferOffset" /> and <paramref name="bufferCount" /> is larger than the <paramref name="buffer" /> length.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+        </member>
+        <member name="P:Udt.DataPacket.DataCapacity">
+            <summary>
+Get the space allocated to the packet payload. This may be greater
+than or equal to <see cref="P:Udt.DataPacket.DataLength" />.
+</summary>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+        </member>
+        <member name="P:Udt.DataPacket.DataLength">
+            <summary>
+Get or set the length of the packet payload, in bytes.
+Default value is 0.
+</summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="value" /> is less than 0.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="P:Udt.DataPacket.PacketNumber">
+            <summary>
+Get or set the packet sequence number.
+Default value is 0.
+</summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="value" /> is less than 0.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="P:Udt.DataPacket.MessageNumber">
+            <summary>
+Get or set the message sequence number for the packet.
+Default value is 0.
+</summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="value" /> is less than 0 or greater than <see cref="F:Udt.DataPacket.MaxMessageNumber" />.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="P:Udt.DataPacket.InOrder">
+            <summary>
+Get or set true if the packet in-order delivery for the packet is
+required. Default value is false.
+</summary>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="P:Udt.DataPacket.MessageBoundary">
+            <summary>
+Get or set the location of the packet in the stream.
+Default value is <b>None</b>.
+</summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="value" /> is invalid.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="T:Udt.DataPacket">
+            <summary>
+UDT protocol data packet.
+</summary>
+        </member>
+        <member name="M:Udt.CongestionControlFactory.CreateCongestionControl">
+            <summary>
+Create a new <typeparamref name="T" /> instance.
+</summary>
+            <remarks>
+This method must return a new instance every time it is invoked.
+If the same instance returns the same instance more than once,
+the result is undefined behavior.
+</remarks>
+            <returns>New congestion control object.</returns>
+        </member>
+        <member name="M:Udt.CongestionControlFactory.#ctor(System.Func`1{Udt.CongestionControl})">
+            <summary>
+Initialize a new instance that creates instances of <typeparamref name="CongestionControl" />
+using the provided callback.
+</summary>
+            <param name="callback">Function to invoke to create new instances of <typeparamref name="T" /></param>
+            <exception name="System::ArgumentNullException">If <paramref name="callback" /> is null.</exception>
+        </member>
+        <member name="T:Udt.CongestionControlFactory">
+            <summary>
+Factory that creates <see cref="T:Udt.CongestionControl" /> instances for a
+<see cref="T:Udt.Socket" />.
+</summary>
+            <remarks>
+                <see cref="M:Udt.CongestionControlFactory.CreateCongestionControl" /> must return a new instance every
+time it is invoked. If the same instance returns the same instance more
+than once, the result is undefined behavior.
+</remarks>
+        </member>
+        <member name="M:Udt.ICongestionControlFactory.CreateCongestionControl">
+            <summary>
+Create a new <see cref="T:Udt.CongestionControl" /> instance.
+</summary>
+            <remarks>
+This method must return a new instance every time it is invoked.
+If the same instance returns the same instance more than once,
+the result is undefined behavior.
+</remarks>
+            <returns>New congestion control object.</returns>
+        </member>
+        <member name="T:Udt.ICongestionControlFactory">
+            <summary>
+Factory that creates <see cref="T:Udt.CongestionControl" /> instances for a
+<see cref="T:Udt.Socket" />.
+</summary>
+            <remarks>
+                <see cref="M:Udt.ICongestionControlFactory.CreateCongestionControl" /> must return a new instance every
+time it is invoked. If the same instance returns the same instance more
+than once, the result is undefined behavior.
+</remarks>
+        </member>
+        <member name="P:Udt.SocketPoller.WriteSockets">
+            <summary>
+Sockets that are ready to write or broken or empty for none.
+By default the collection is empty.
+</summary>
+            <remarks>
+The collection is read-only. A new collection instance is
+created each time <see cref="M:Udt.SocketPoller.Wait" /> is called.
+</remarks>
+        </member>
+        <member name="P:Udt.SocketPoller.ReadSockets">
+            <summary>
+Sockets that are ready to read or empty for none.
+By default the collection is empty.
+</summary>
+            <remarks>
+The collection is read-only. A new collection instance is
+created each time <see cref="M:Udt.SocketPoller.Wait" /> is called.
+</remarks>
+        </member>
+        <member name="M:Udt.SocketPoller.Wait(System.TimeSpan)">
+            <summary>
+Wait for a socket event to occur.
+</summary>
+            <remarks>
+Use <see cref="P:Udt.SocketPoller.ReadSockets" /> and <see cref="P:Udt.SocketPoller.WriteSockets" /> to get
+the sockets an event occurred on.
+</remarks>
+            <param name="timeout">Maximum amount of time to wait for an event to occur or -1 milliseconds to wait indefinitely.</param>
+            <returns>True if an event occurred before the timeout expired.</returns>
+            <exception cref="T:Udt.SocketException">If an error occurs waiting.</exception>
+            <exception cref="T:System.InvalidOperationException">If no sockets have been added to the poller.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+        </member>
+        <member name="M:Udt.SocketPoller.Wait">
+            <summary>
+Wait indefinitely for a socket event to occur.
+</summary>
+            <exception cref="T:Udt.SocketException">If an error occurs waiting.</exception>
+            <exception cref="T:System.InvalidOperationException">If no sockets have been added to the poller.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+        </member>
+        <member name="M:Udt.SocketPoller.RemoveSocket(Udt.Socket)">
+            <summary>
+Remove a socket from the poller.
+</summary>
+            <param name="socket">Socket to remove.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="socket" /> is null.</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs removing the socket.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+        </member>
+        <member name="M:Udt.SocketPoller.AddSocket(Udt.Socket)">
+            <summary>
+Add a socket to the poller.
+</summary>
+            <remarks>
+If the <paramref name="socket" /> has already been added to the poller,
+it will be ignored if added again.
+</remarks>
+            <param name="socket">Socket to add.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="socket" /> is null.</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs adding the socket.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+        </member>
+        <member name="M:Udt.SocketPoller.#ctor">
+            <summary>
+Initialize a new instance.
+</summary>
+        </member>
+        <member name="T:Udt.SocketPoller">
+            <summary>
+Used to poll IO events from multiple sockets.
+</summary>
+        </member>
+        <member name="P:Udt.Socket.IsDisposed">
+            <summary>
+Get true or false if this socket has been closed.
+</summary>
+        </member>
+        <member name="P:Udt.Socket.CongestionControl">
+            <summary>
+Get or set the custom congestion control algorithm for this socket
+or null to use the default.
+</summary>
+            <remarks>
+The custom congestion control algorithm will be passed to any
+sockets accepted by this socket.
+</remarks>
+        </member>
+        <member name="P:Udt.Socket.RemoteEndPoint">
+            <summary>
+Gets the remote end point.
+</summary>
+            <value>
+The remote end point that the socket is using for communications.
+</value>
+            <exception cref="T:Udt.SocketException">If an error occurs accessing the socket.</exception>
+        </member>
+        <member name="P:Udt.Socket.SocketType">
+            <summary>
+Gets the type of the socket.
+</summary>
+        </member>
+        <member name="P:Udt.Socket.AddressFamily">
+            <summary>
+Gets the address family of the socket.
+</summary>
+        </member>
+        <member name="P:Udt.Socket.LocalEndPoint">
+            <summary>
+Gets the local end point.
+</summary>
+            <value>
+The local end point that the socket is using for communications.
+</value>
+            <exception cref="T:Udt.SocketException">If an error occurs accessing the socket.</exception>
+        </member>
+        <member name="M:Udt.Socket.GetPerformanceInfo(System.Boolean)">
+            <summary>
+Retrieve internal protocol parameters and performance trace.
+</summary>
+            <param name="clear">True to clear local trace information and counts.</param>
+            <returns>UDT socket performance trace information.</returns>
+        </member>
+        <member name="M:Udt.Socket.GetPerformanceInfo">
+            <summary>
+Retrieve internal protocol parameters and performance trace.
+</summary>
+            <remarks>
+Same as <c>GetPerformanceInfo(true)</c>.
+</remarks>
+            <returns>UDT socket performance trace information.</returns>
+        </member>
+        <member name="M:Udt.Socket.ReceiveFile(System.String,System.Int64)">
+            <summary>
+Receive data on this socket and store it in a local file.
+</summary>
+            <param name="fileName">Name of the local file to write the data to.</param>
+            <param name="length">Number of bytes to read from the socket into <paramref name="fileName" /></param>
+            <returns>The total number of bytes received.</returns>
+            <exception cref="T:Udt.SocketException">If an error occurs accessing the socket or the file.</exception>
+        </member>
+        <member name="M:Udt.Socket.SendFile(System.String,System.Int64,System.Int64)">
+            <summary>
+Send the contents of a file on this socket.
+</summary>
+            <remarks>
+Does not send a file size.
+</remarks>
+            <param name="fileName">Name of the local file to send.</param>
+            <param name="offset">Offset in the file to start sending.</param>
+            <param name="count">Number of bytes to send or -1 to send until the end of the file is reached.</param>
+            <returns>The total number of bytes sent.</returns>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="fileName" /> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="offset" /> is less than 0 or <paramref name="count" /> is less than -1.</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs accessing the socket or the file.</exception>
+        </member>
+        <member name="M:Udt.Socket.SendFile(System.String,System.Int64)">
+            <summary>
+Send the contents of a file on this socket.
+</summary>
+            <remarks>
+Does not send a file size.
+</remarks>
+            <param name="fileName">Name of the local file to send.</param>
+            <param name="offset">Offset in the file to start sending.</param>
+            <returns>The total number of bytes sent.</returns>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="fileName" /> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="offset" /> is less than 0.</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs accessing the socket or the file.</exception>
+        </member>
+        <member name="M:Udt.Socket.SendFile(System.String)">
+            <summary>
+Send the contents of a file on this socket.
+</summary>
+            <remarks>
+Does not send a file size.
+</remarks>
+            <param name="fileName">Name of the local file to send.</param>
+            <returns>The total number of bytes sent.</returns>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="fileName" /> is null.</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs accessing the socket or the file.</exception>
+        </member>
+        <member name="M:Udt.Socket.Send(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+Send the specified bytes.
+</summary>
+            <remarks>
+If the socket is in blocking mode, the call will block until the
+entire buffer is sent. In non-blocking mode, the call may return
+a value less than the length of the buffer (even zero) if the socket
+send queue limit has been reached. See <see cref="P:Udt.Socket.BlockingSend" />.
+</remarks>
+            <param name="buffer">Bytes to send.</param>
+            <param name="offset">Offset into <paramref name="buffer" /> to start sending.</param>
+            <param name="size">Number of bytes to send.</param>
+            <returns>The total number of bytes sent.</returns>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="buffer" /> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="offset" /> or <paramref name="size" /> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">If <paramref name="size" /> is greater than the length of the <paramref name="buffer" /> minus the <paramref name="offset" />.</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Send(System.Byte[])">
+            <summary>
+Send the specified bytes.
+</summary>
+            <remarks>
+If the socket is in blocking mode, the call will block until the
+entire buffer is sent. In non-blocking mode, the call may return
+a value less than the length of the buffer (even zero) if the socket
+send queue limit has been reached. See <see cref="P:Udt.Socket.BlockingSend" />.
+</remarks>
+            <param name="buffer">Bytes to send.</param>
+            <returns>The total number of bytes sent.</returns>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="buffer" /> is null.</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Select(System.Collections.Generic.ICollection`1{Udt.Socket},System.Collections.Generic.ICollection`1{Udt.Socket},System.Collections.Generic.ICollection`1{Udt.Socket},System.Collections.Generic.ICollection`1{Udt.Socket},System.TimeSpan)">
+            <summary>
+Determines the status of one or more sockets.
+</summary>
+            <param name="checkSockets">Sockets to check the status of.</param>
+            <param name="readSockets">Sockets that are ready for receive.</param>
+            <param name="writeSockets">Socket that are ready to write.</param>
+            <param name="errorSockets">Sockets that are closed or with a broken connection.</param>
+            <param name="timeout">Timeout value or <see cref="F:Udt.Socket.InfiniteTimeout" />.</param>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="checkSockets" /> is a null reference.
+</exception>
+            <exception cref="T:System.ArgumentException">
+If <paramref name="checkSockets" /> contains a null reference.
+</exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="readSockets" />, <paramref name="writeSockets" />, and <paramref name="errorSockets" /> are null references.
+</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="timeout" /> is not <see cref="F:Udt.Socket.InfiniteTimeout" /> and
+is less than 0.
+</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Select(System.Collections.Generic.ICollection`1{Udt.Socket},System.Collections.Generic.ICollection`1{Udt.Socket},System.Collections.Generic.ICollection`1{Udt.Socket},System.TimeSpan)">
+            <summary>
+Determines the status of one or more sockets.
+</summary>
+            <remarks>
+Note that, currently, <paramref name="checkError" /> is ignored in UDT4.
+</remarks>
+            <param name="checkRead">Socket instances to check for readability.</param>
+            <param name="checkWrite">Socket instances to check for writeability.</param>
+            <param name="checkError">Socket instances to check for errors.</param>
+            <param name="timeout">Timeout value or <see cref="F:Udt.Socket.InfiniteTimeout" />.</param>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="checkRead" /> is a null reference or empty
+- and -
+<paramref name="checkWrite" /> is a null reference or empty
+- and -
+<paramref name="checkError" /> is a null reference or empty
+</exception>
+            <exception cref="T:System.ArgumentException">
+If <paramref name="checkRead" />, <paramref name="checkWrite" />, or
+<paramref name="checkError" /> contains a null reference.
+</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="timeout" /> is not <see cref="F:Udt.Socket.InfiniteTimeout" /> and
+is less than 0.
+</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Connect(System.Net.IPEndPoint)">
+            <summary>
+Establishes a connection to a remote host.
+</summary>
+            <param name="endPoint">Remote end point to connect to.</param>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="endPoint" /> is a null reference
+</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Connect(System.Net.IPAddress[],System.Int32)">
+            <summary>
+Establishes a connection to a remote host.
+</summary>
+            <param name="addresses">Addresses of the host to connect to.</param>
+            <param name="port">Port to connect to.</param>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="addresses" /> is a null reference
+</exception>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="addresses" /> is empty
+</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />
+or greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.
+</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Connect(System.Net.IPAddress,System.Int32)">
+            <summary>
+Establishes a connection to a remote host.
+</summary>
+            <param name="address">Address of the host to connect to.</param>
+            <param name="port">Port to connect to.</param>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="address" /> is a null reference
+</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />
+or greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.
+</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Connect(System.String,System.Int32)">
+            <summary>
+Establishes a connection to a remote host.
+</summary>
+            <param name="host">Name of the host to connect to.</param>
+            <param name="port">Port to connect to.</param>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="host" /> is a null reference
+</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />
+or greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.
+</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Accept">
+            <summary>
+Creates a <see cref="T:Udt.Socket" /> for a newly created connection.
+</summary>
+            <remarks>
+                <b>Accept</b> synchronously extracts the first pending connection
+request from the connection request queue of the listening socket,
+and then creates and returns a new <see cref="T:Udt.Socket" />.
+</remarks>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Listen(System.Int32)">
+            <summary>
+Places the socket in a listening state.
+</summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="backlog" /> is less than 1.
+</exception>
+            <exception cref="T:Udt.SocketException">If an error occurs.</exception>
+        </member>
+        <member name="M:Udt.Socket.Bind(System.Net.Sockets.Socket)">
+            <summary>
+Bind directly to an existing UDP socket.
+</summary>
+            <remarks>
+                <para>
+This is useful for firewall traversing in certain situations:
+<list type="number"><item><description>
+A UDP socket is created and its address is learned from a name server,
+there is no need to close the UDP socket and open a UDT socket on the
+same address again
+</description></item><item><description>
+For certain firewalls, especially some on local system, the port mapping
+may be changed or the "hole" may be closed when a UDP socket is closed
+and reopened, thus it is necessary to use the UDP socket directly in UDT.
+</description></item></list></para>
+                <para>
+Use this form of bind with caution, as it violates certain programming
+rules regarding code robustness. Once <paramref name="udpSocket" /> is
+passed to UDT, it MUST NOT be touched again. DO NOT use this unless
+you clearly understand how the related systems work.
+</para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="udpSocket" /> is a null reference
+</exception>
+            <exception cref="T:System.ArgumentException">
+                <see cref="P:System.Net.Sockets.Socket.ProtocolType" /> is not
+<c>Udp</c> for <paramref name="udpSocket" /></exception>
+            <exception cref="T:Udt.SocketException">
+If an error occurs binding the socket (i.e. the socket is already bound, etc).
+</exception>
+        </member>
+        <member name="M:Udt.Socket.Bind(System.Net.IPEndPoint)">
+            <summary>
+Associate the socket with a local end point.
+</summary>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="endPoint" /> is a null reference
+</exception>
+            <exception cref="T:System.ArgumentException">
+If the type of address in <paramref name="endPoint" /> is not compatible with the
+<b>AddressFamily</b> passed to the <b>Socket(AddressFamily,SocketType)</b>
+constructor.
+</exception>
+            <exception cref="T:Udt.SocketException">
+If an error occurs binding the socket (i.e. the socket is already bound, etc).
+</exception>
+        </member>
+        <member name="M:Udt.Socket.Bind(System.Net.IPAddress,System.Int32)">
+            <summary>
+Associate the socket with a local end point.
+</summary>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="address" /> is a null reference
+</exception>
+            <exception cref="T:System.ArgumentException">
+If the type of <paramref name="address" /> is not compatible with the
+<b>AddressFamily</b> passed to the <b>Socket(AddressFamily,SocketType)</b>
+constructor.
+</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="port" /> is less than <see cref="F:System.Net.IPEndPoint.MinPort" />
+or greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.
+</exception>
+            <exception cref="T:Udt.SocketException">
+If an error occurs binding the socket (i.e. the socket is already bound, etc).
+</exception>
+        </member>
+        <member name="M:Udt.Socket.Close">
+            <summary>
+Close the socket and release any associated resources.
+</summary>
+        </member>
+        <member name="M:Udt.Socket.Dispose">
+            <summary>
+Closes the socket.
+</summary>
+        </member>
+        <member name="M:Udt.Socket.#ctor(System.Net.Sockets.AddressFamily,System.Net.Sockets.SocketType)">
+            <summary>
+Initialize a new instance using the specified address family and
+socket type.
+</summary>
+            <param name="family">Address family.</param>
+            <param name="type">Socket type.</param>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="family" /> is not either <c>InterNetwork</c> or <c>InterNetworkV6</c><br /><b>- or -</b><br /><paramref name="type" /> is not either <c>Dgram</c> or <c>Stream</c></exception>
+            <exception cref="T:Udt.SocketException">If an error occurs creating the socket.</exception>
+        </member>
+        <member name="F:Udt.Socket.InfiniteTimeout">
+            <summary>
+Timeout value that indicates infinite.
+</summary>
+        </member>
+        <member name="T:Udt.Socket">
+            <summary>
+Interface to a UDT socket.
+</summary>
+        </member>
+        <member name="M:Udt.StdFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <summary>Initializes a new instance of the <see cref="T:Udt.StdFileStream" /> class with the specified path, creation mode, read/write permission, and sharing permission.</summary>
+            <param name="path">A relative or absolute path for the file that the current FileStream object will encapsulate. </param>
+            <param name="mode">A <see cref="T:System.IO.FileMode" /> constant that determines how to open or create the file. </param>
+            <param name="access">A <see cref="T:System.IO.FileAccess" /> constant that determines how the file can be accessed by the FileStream object. This gets the <see cref="P:Udt.StdFileStream.CanRead" /> and <see cref="P:Udt.StdFileStream.CanWrite" /> properties of the FileStream object. <see cref="P:Udt.StdFileStream.CanSeek" /> is true if <paramref name="path" /> specifies a disk file. </param>
+            <param name="share">A <see cref="T:System.IO.FileShare" /> constant that determines how the file will be shared by processes. </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="path" /> is null. </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="path" /> is an empty string (""), contains only white space, or contains one or more invalid characters. -or-<paramref name="path" /> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in an NTFS environment.</exception>
+            <exception cref="T:System.NotSupportedException">
+                <paramref name="path" /> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in a non-NTFS environment.</exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="path" /> is an empty string (""), contains only white space, or contains one or more invalid characters. </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file cannot be found, such as when <paramref name="mode" /> is FileMode.Truncate or FileMode.Open, and the file specified by <paramref name="path" /> does not exist. The file must already exist in these modes. </exception>
+            <exception cref="T:System.IO.IOException">An I/O error, such as specifying FileMode.CreateNew when the file specified by <paramref name="path" /> already exists, occurred. -or-The system is running Windows 98 or Windows 98 Second Edition and <paramref name="share" /> is set to FileShare.Delete.-or-The stream has been closed.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, such as being on an unmapped drive. </exception>
+            <exception cref="T:System.UnauthorizedAccessException">The <paramref name="access" /> requested is not permitted by the operating system for the specified <paramref name="path" />, such as when <paramref name="access" /> is Write or ReadWrite and the file or directory is set for read-only access. </exception>
+            <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="mode" /> contains an invalid value.
+- or -
+<paramref name="share" /> contains <b>FileShare::Inheritable</b> or <b>FileShare::Delete</b></exception>
+        </member>
+        <member name="M:Udt.StdFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>Initializes a new instance of the <see cref="T:Udt.StdFileStream" /> class with the specified path, creation mode, and read/write permission.</summary>
+            <param name="path">A relative or absolute path for the file that the current FileStream object will encapsulate. </param>
+            <param name="mode">A <see cref="T:System.IO.FileMode" /> constant that determines how to open or create the file. </param>
+            <param name="access">A <see cref="T:System.IO.FileAccess" /> constant that determines how the file can be accessed by the FileStream object. This gets the <see cref="P:Udt.StdFileStream.CanRead" /> and <see cref="P:Udt.StdFileStream.CanWrite" /> properties of the FileStream object. <see cref="P:Udt.StdFileStream.CanSeek" /> is true if <paramref name="path" /> specifies a disk file. </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="path" /> is null. </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="path" /> is an empty string (""), contains only white space, or contains one or more invalid characters. -or-<paramref name="path" /> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in an NTFS environment.</exception>
+            <exception cref="T:System.NotSupportedException">
+                <paramref name="path" /> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in a non-NTFS environment.</exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="path" /> is an empty string (""), contains only white space, or contains one or more invalid characters. </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file cannot be found, such as when <paramref name="mode" /> is FileMode.Truncate or FileMode.Open, and the file specified by <paramref name="path" /> does not exist. The file must already exist in these modes. </exception>
+            <exception cref="T:System.IO.IOException">An I/O error, such as specifying FileMode.CreateNew when the file specified by <paramref name="path" /> already exists, occurred. -or-The stream has been closed.</exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, such as being on an unmapped drive. </exception>
+            <exception cref="T:System.UnauthorizedAccessException">The <paramref name="access" /> requested is not permitted by the operating system for the specified <paramref name="path" />, such as when <paramref name="access" /> is Write or ReadWrite and the file or directory is set for read-only access. </exception>
+            <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="mode" /> contains an invalid value. </exception>
+        </member>
+        <member name="M:Udt.StdFileStream.#ctor(System.String,System.IO.FileMode)">
+            <summary>Initializes a new instance of the <see cref="T:Udt.StdFileStream" /> class with the specified path and creation mode.</summary>
+            <param name="path">A relative or absolute path for the file that the current FileStream object will encapsulate. </param>
+            <param name="mode">A <see cref="T:System.IO.FileMode" /> constant that determines how to open or create the file. </param>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="path" /> is an empty string (""), contains only white space, or contains one or more invalid characters. -or-<paramref name="path" /> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in an NTFS environment.</exception>
+            <exception cref="T:System.NotSupportedException">
+                <paramref name="path" /> refers to a non-file device, such as "con:", "com1:", "lpt1:", etc. in a non-NTFS environment.</exception>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="path" /> is null. </exception>
+            <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+            <exception cref="T:System.IO.FileNotFoundException">The file cannot be found, such as when <paramref name="mode" /> is FileMode.Truncate or FileMode.Open, and the file specified by <paramref name="path" /> does not exist. The file must already exist in these modes. </exception>
+            <exception cref="T:System.IO.IOException">An I/O error, such as specifying FileMode.CreateNew when the file specified by <paramref name="path" /> already exists, occurred.-or-The stream has been closed. </exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The specified path is invalid, such as being on an unmapped drive. </exception>
+            <exception cref="T:System.IO.PathTooLongException">The specified path, file name, or both exceed the system-defined maximum length. For example, on Windows-based platforms, paths must be less than 248 characters, and file names must be less than 260 characters. </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="mode" /> contains an invalid value. </exception>
+        </member>
+        <member name="T:Udt.StdFileStream">
+            <summary>
+Interface to a UDT socket.
+</summary>
+        </member>
+        <member name="T:Udt.SocketError">
+            <summary>
+UDT socket error codes.
+</summary>
+        </member>
+        <member name="F:Udt.SocketError.NoDataAvailable">
+            <summary>
+No data available for read.
+</summary>
+            <value>6002</value>
+        </member>
+        <member name="F:Udt.SocketError.NoSendBuffer">
+            <summary>
+No buffer available for sending.
+</summary>
+            <value>6001</value>
+        </member>
+        <member name="F:Udt.SocketError.NonBlockCallFail">
+            <summary>
+Non-blocking call failure.
+</summary>
+            <value>6000</value>
+        </member>
+        <member name="F:Udt.SocketError.MessageTooBig">
+            <summary>
+Message is too large to be hold in the sending buffer.
+</summary>
+            <value>5012</value>
+        </member>
+        <member name="F:Udt.SocketError.SocketInUse">
+            <summary>
+Another socket is already listening on the same UDP port.
+</summary>
+            <value>5011</value>
+        </member>
+        <member name="F:Udt.SocketError.OperationNotSupportedForDGram">
+            <summary>
+Operation not supported in SOCK_DGRAM mode.
+</summary>
+            <value>5010</value>
+        </member>
+        <member name="F:Udt.SocketError.OperationNotSupportedForStream">
+            <summary>
+Operation not supported in SOCK_STREAM mode.
+</summary>
+            <value>5009</value>
+        </member>
+        <member name="F:Udt.SocketError.RendezvousUnbound">
+            <summary>
+Rendezvous connection setup is enabled, but bind has not been called
+before connect.
+</summary>
+            <value>5008</value>
+        </member>
+        <member name="F:Udt.SocketError.RendezvousNoServer">
+            <summary>
+Rendezvous connection process does not allow listen and accept call.
+</summary>
+            <value>5007</value>
+        </member>
+        <member name="F:Udt.SocketError.NotListening">
+            <summary>
+Socket is not in listening state (accept).
+</summary>
+            <value>5006</value>
+        </member>
+        <member name="F:Udt.SocketError.UnboundSocket">
+            <summary>
+Cannot listen on unbound socket.
+</summary>
+            <value>5005</value>
+        </member>
+        <member name="F:Udt.SocketError.InvalidSocket">
+            <summary>
+Invalid UDT socket.
+</summary>
+            <value>5004</value>
+        </member>
+        <member name="F:Udt.SocketError.InvalidParameter">
+            <summary>
+Bad parameters.
+</summary>
+            <value>5003</value>
+        </member>
+        <member name="F:Udt.SocketError.ConnectedSocket">
+            <summary>
+Cannot execute the operation on a connected socket.
+</summary>
+            <value>5002</value>
+        </member>
+        <member name="F:Udt.SocketError.BoundSocket">
+            <summary>
+Cannot execute the operation on a bound socket.
+</summary>
+            <value>5001</value>
+        </member>
+        <member name="F:Udt.SocketError.InvalidOperation">
+            <summary>
+Invalid operation.
+</summary>
+            <value>5000</value>
+        </member>
+        <member name="F:Udt.SocketError.WritePermission">
+            <summary>
+No write permission.
+</summary>
+            <value>4004</value>
+        </member>
+        <member name="F:Udt.SocketError.InvalidWriteOffset">
+            <summary>
+Invalid write offset.
+</summary>
+            <value>4003</value>
+        </member>
+        <member name="F:Udt.SocketError.ReadPermission">
+            <summary>
+No read permission.
+</summary>
+            <value>4002</value>
+        </member>
+        <member name="F:Udt.SocketError.InvalidReadOffset">
+            <summary>
+Invalid read offset.
+</summary>
+            <value>4001</value>
+        </member>
+        <member name="F:Udt.SocketError.File">
+            <summary>
+File access error.
+</summary>
+            <value>4000</value>
+        </member>
+        <member name="F:Udt.SocketError.NoBuffer">
+            <summary>
+No memory space.
+</summary>
+            <value>3002</value>
+        </member>
+        <member name="F:Udt.SocketError.Thread">
+            <summary>
+Could not create new thread.
+</summary>
+            <value>3001</value>
+        </member>
+        <member name="F:Udt.SocketError.Resource">
+            <summary>
+System resource failure.
+</summary>
+            <value>3000</value>
+        </member>
+        <member name="F:Udt.SocketError.NoConnection">
+            <summary>
+Connection does not exist.
+</summary>
+            <value>2002</value>
+        </member>
+        <member name="F:Udt.SocketError.ConnectionLost">
+            <summary>
+Connection was broken.
+</summary>
+            <value>2001</value>
+        </member>
+        <member name="F:Udt.SocketError.ConnectionFail">
+            <summary>
+Connection failure.
+</summary>
+            <value>2000</value>
+        </member>
+        <member name="F:Udt.SocketError.SecurityFail">
+            <summary>
+Connection request was aborted due to security reasons.
+</summary>
+            <value>1004</value>
+        </member>
+        <member name="F:Udt.SocketError.SocketFail">
+            <summary>
+Could not create/configure UDP socket.
+</summary>
+            <value>1003</value>
+        </member>
+        <member name="F:Udt.SocketError.ConnectionRejected">
+            <summary>
+Connection request was rejected by server.
+</summary>
+            <value>1002</value>
+        </member>
+        <member name="F:Udt.SocketError.NoServer">
+            <summary>
+Server does not exist.
+</summary>
+            <value>1001</value>
+        </member>
+        <member name="F:Udt.SocketError.ConnectionSetup">
+            <summary>
+Connection setup failure.
+</summary>
+            <value>1000</value>
+        </member>
+        <member name="F:Udt.SocketError.Success">
+            <summary>
+The operation succeeded.
+</summary>
+            <value>0</value>
+        </member>
+        <member name="F:Udt.SocketError.Error">
+            <summary>
+Unspecified socket error.
+</summary>
+            <value>-1</value>
+        </member>
+        <member name="T:Udt.SocketState">
+            <summary>
+States the UDT socket can be in.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Closed">
+            <summary>
+Socket is closed.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Closing">
+            <summary>
+Socket is closing.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Broken">
+            <summary>
+Socket is broken.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Connected">
+            <summary>
+Socket is connected.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Connecting">
+            <summary>
+Socket is establishing the connection.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Listening">
+            <summary>
+Socket is listening.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Open">
+            <summary>
+Socket is open.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Initial">
+            <summary>
+Socket is in initialized state.
+</summary>
+        </member>
+        <member name="F:Udt.SocketState.Invalid">
+            <summary>
+Invalid socket state. A socket will never be in this state.
+</summary>
+        </member>
+        <member name="T:Udt.SocketEvents">
+            <summary>
+Events available on the socket.
+</summary>
+        </member>
+        <member name="F:Udt.SocketEvents.Output">
+            <summary>
+There is data pending to send.
+</summary>
+        </member>
+        <member name="F:Udt.SocketEvents.Input">
+            <summary>
+There is data pending to read.
+</summary>
+        </member>
+        <member name="F:Udt.SocketEvents.Error">
+            <summary>
+Socket has an error.
+</summary>
+        </member>
+        <member name="F:Udt.SocketEvents.None">
+            <summary>
+No status flags.
+</summary>
+        </member>
+        <member name="T:Udt.SocketOptionName">
+            <summary>
+Socket configuration option names.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.State">
+            <summary>
+Socket state (read only).
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.Events">
+            <summary>
+Events available on the socket (read only).
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.ReceiveData">
+            <summary>
+Size of data available for receiving (read only).
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.SendData">
+            <summary>
+Size of data in the sending buffer (read only).
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.CongestionControl">
+            <summary>
+Custom congestion control algorithm.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.Linger">
+            <summary>
+Waiting for unsent data when closing.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.MaxBandwidth">
+            <summary>
+Maximum bandwidth (bytes per second) that the connection can use.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.ReuseAddress">
+            <summary>
+Reuse an existing port or create a new one.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.ReceiveTimeout">
+            <summary>
+Receive timeout.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.SendTimeout">
+            <summary>
+Send timeout.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.Rendezvous">
+            <summary>
+Rendezvous connection mode.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.UdpReceiveBuffer">
+            <summary>
+UDP receiving buffer size.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.UdpSendBuffer">
+            <summary>
+UDP sending buffer size.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.ReceiveBuffer">
+            <summary>
+UDT receiving buffer size.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.SendBuffer">
+            <summary>
+Maximum buffer in sending queue.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.MaxWindowSize">
+            <summary>
+Flight flag size (window size).
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.BlockingReceive">
+            <summary>
+If receiving is blocking.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.BlockingSend">
+            <summary>
+If sending is blocking.
+</summary>
+        </member>
+        <member name="F:Udt.SocketOptionName.MaxPacketSize">
+            <summary>
+The maximum transfer unit.
+</summary>
+        </member>
+        <member name="P:Udt.Message.TimeToLive">
+            <summary>
+The time-to-live of the message.
+Default value is <see cref="F:Udt.Message.Infinite" />.
+</summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="value" /> is not <see cref="F:Udt.Message.Infinite" /> and is less
+than <see cref="F:System.TimeSpan.Zero" /> or greater than
+<see cref="F:Udt.Message.Max" />.
+</exception>
+        </member>
+        <member name="P:Udt.Message.InOrder">
+            <summary>
+True if the message should be delivered in order.
+Default value is <c>false</c>.
+</summary>
+        </member>
+        <member name="P:Udt.Message.Buffer">
+            <summary>
+Gets the message content.
+</summary>
+        </member>
+        <member name="M:Udt.Message.#ctor(System.ArraySegment`1{System.Byte})">
+            <summary>
+Initialize a new instance.
+</summary>
+            <param name="buffer">Array segment that contains the message bytes.</param>
+            <exception cref="T:System.ArgumentException">
+If the array in <paramref name="buffer" /> is a null reference.
+</exception>
+        </member>
+        <member name="M:Udt.Message.#ctor(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+Initialize a new instance.
+</summary>
+            <param name="array">Array that contains the message bytes.</param>
+            <param name="offset">Offset into <paramref name="array" /> that the message starts.</param>
+            <param name="count">Number of bytes from <paramref name="array" /> to include in the message.</param>
+            <exception cref="T:System.ArgumentNullException">
+If <paramref name="array" /> is a null reference.
+</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+If <paramref name="offset" /> is negative.
+</exception>
+            <exception cref="T:System.ArgumentException">
+If <paramref name="offset" /> and <paramref name="count" /> do not
+specify a valid range in <paramref name="array" />.
+</exception>
+        </member>
+        <member name="M:Udt.Message.#ctor(System.Byte[])">
+            <summary>
+Initialize a new instance.
+</summary>
+            <param name="array">Array that contains the message bytes.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="array" /> is a null reference.</exception>
+        </member>
+        <member name="F:Udt.Message.Max">
+            <summary>
+Maximum value for <see cref="P:Udt.Message.TimeToLive" />.
+</summary>
+        </member>
+        <member name="F:Udt.Message.Infinite">
+            <summary>
+Infinite <see cref="P:Udt.Message.TimeToLive" />.
+</summary>
+        </member>
+        <member name="T:Udt.Message">
+            <summary>
+Message sent over a UDT socket.
+</summary>
+        </member>
+        <member name="M:Udt.NetworkStream.Dispose">
+            <summary>
+Dispose of the stream.
+</summary>
+        </member>
+        <member name="M:Udt.NetworkStream.#ctor(Udt.Socket,System.IO.FileAccess,System.Boolean)">
+            <summary>
+Initialize a new instance.
+</summary>
+            <param name="socket">Socket this stream will use to send/receive data.</param>
+            <param name="access">Type of access to the <paramref name="socket" /> given to the stream.</param>
+            <param name="ownsSocket">True if this stream will assume ownership of the <paramref name="socket" />.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="socket" /> is a null reference.</exception>
+            <exception cref="T:System.ArgumentException">
+If <paramref name="socket" />.SocketType is not <see cref="F:System.Net.Sockets.SocketType.Stream" /><br /><b>- or -</b><br /><paramref name="socket" /> is in non-blocking mode
+</exception>
+        </member>
+        <member name="M:Udt.NetworkStream.#ctor(Udt.Socket,System.IO.FileAccess)">
+            <summary>
+Initialize a new instance.
+</summary>
+            <param name="socket">Socket this stream will use to send/receive data.</param>
+            <param name="access">Type of access to the <paramref name="socket" /> given to the stream.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="socket" /> is a null reference.</exception>
+            <exception cref="T:System.ArgumentException">
+If <paramref name="socket" />.SocketType is not <see cref="F:System.Net.Sockets.SocketType.Stream" /><br /><b>- or -</b><br /><paramref name="socket" /> is in non-blocking mode
+</exception>
+        </member>
+        <member name="M:Udt.NetworkStream.#ctor(Udt.Socket,System.Boolean)">
+            <summary>
+Initialize a new instance.
+</summary>
+            <param name="socket">Socket this stream will use to send/receive data.</param>
+            <param name="ownsSocket">True if this stream will assume ownership of the <paramref name="socket" />.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="socket" /> is a null reference.</exception>
+            <exception cref="T:System.ArgumentException">
+If <paramref name="socket" />.SocketType is not <see cref="F:System.Net.Sockets.SocketType.Stream" /><br /><b>- or -</b><br /><paramref name="socket" /> is in non-blocking mode
+</exception>
+        </member>
+        <member name="M:Udt.NetworkStream.#ctor(Udt.Socket)">
+            <summary>
+Initialize a new instance.
+</summary>
+            <param name="socket">Socket this stream will use to send/receive data.</param>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="socket" /> is a null reference.</exception>
+            <exception cref="T:System.ArgumentException">
+If <paramref name="socket" />.SocketType is not <see cref="F:System.Net.Sockets.SocketType.Stream" /><br /><b>- or -</b><br /><paramref name="socket" /> is in non-blocking mode
+</exception>
+        </member>
+        <member name="P:Udt.NetworkStream.Socket">
+            <summary>
+Get the underlying socket.
+</summary>
+        </member>
+        <member name="T:Udt.NetworkStream">
+            <summary>
+Provides a <see cref="T:System.IO.Stream" /> interface to a UDT socket.
+</summary>
+        </member>
+        <member name="P:Udt.TraceInfo.Probe">
+            <summary>
+Instant values at the time they are observed.
+</summary>
+        </member>
+        <member name="P:Udt.TraceInfo.Local">
+            <summary>
+Local values since the last time they are recorded.
+</summary>
+            <remarks>
+The local attributes are reset when <c>true</c> is passed to
+<b>Udt.Socket.GetPerformanceInfo(bool)</b>.
+</remarks>
+        </member>
+        <member name="P:Udt.TraceInfo.Total">
+            <summary>
+Aggregate values since the UDT socket is created.
+</summary>
+        </member>
+        <member name="M:Udt.TraceInfo.#ctor">
+            <summary>
+Initialize a new instance with default values.
+</summary>
+        </member>
+        <member name="T:Udt.TraceInfo">
+            <summary>
+UDT socket performance trace information.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.SendDuration">
+            <summary>
+Busy sending time (i.e., idle time exclusive).
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.ReceiveMbps">
+            <summary>
+Receiving rate in Mbps.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.SendMbps">
+            <summary>
+Sending rate in Mbps.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.NaksReceived">
+            <summary>
+Number of received NAK packets.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.NaksSent">
+            <summary>
+Number of sent NAK packets.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.AcksReceived">
+            <summary>
+Number of received ACK packets.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.AcksSent">
+            <summary>
+Number of sent ACK packets.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.PacketsRetransmitted">
+            <summary>
+Number of retransmitted packets, measured in the sending side.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.ReceivePacketsLost">
+            <summary>
+Number of lost packets, measured in the receiving side.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.SendPacketsLost">
+            <summary>
+Number of lost packets, measured in the sending side.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.PacketsReceived">
+            <summary>
+Number of received packets.
+</summary>
+        </member>
+        <member name="P:Udt.LocalTraceInfo.PacketsSent">
+            <summary>
+Number of sent packets, including retransmissions.
+</summary>
+        </member>
+        <member name="M:Udt.LocalTraceInfo.#ctor">
+            <summary>
+Initialize a new instance with default values.
+</summary>
+        </member>
+        <member name="T:Udt.LocalTraceInfo">
+            <summary>
+Performance trace information local since the last time they were recorded.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.SendDuration">
+            <summary>
+Total time duration when UDT is sending data (idle time exclusive).
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.NaksReceived">
+            <summary>
+Total number of received NAK packets.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.NaksSent">
+            <summary>
+Total number of sent NAK packets.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.AcksReceived">
+            <summary>
+Total number of received ACK packets.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.AcksSent">
+            <summary>
+Total number of sent ACK packets.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.PacketsRetransmitted">
+            <summary>
+Total number of retransmitted packets, measured in the sending side.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.ReceivePacketsLost">
+            <summary>
+Total number of lost packets, measured in the receiving side.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.SendPacketsLost">
+            <summary>
+Total number of lost packets, measured in the sending side.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.PacketsReceived">
+            <summary>
+Total number of received packets.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.PacketsSent">
+            <summary>
+Total number of sent packets, including retransmissions.
+</summary>
+        </member>
+        <member name="P:Udt.TotalTraceInfo.SocketCreated">
+            <summary>
+Time elapsed since the UDT socket is created.
+</summary>
+        </member>
+        <member name="M:Udt.TotalTraceInfo.#ctor">
+            <summary>
+Initialize a new instance with default values.
+</summary>
+        </member>
+        <member name="T:Udt.TotalTraceInfo">
+            <summary>
+Performance trace information aggregated since the socket was created.
+</summary>
+        </member>
+        <member name="T:Udt.KeepAlivePacket">
+            <summary>
+UDT protocol keep-alive control packet.
+</summary>
+        </member>
+        <member name="T:Udt.ControlPacket">
+            <summary>
+UDT protocol control packet.
+</summary>
+        </member>
+        <member name="F:Udt.Packet.MaxTimeStamp">
+            <summary>
+Maximum allowed value for <see cref="P:Udt.Packet.TimeStamp" />.
+</summary>
+            <value>4,294,967,295 microseconds (01:11:34.9672950).</value>
+        </member>
+        <member name="P:Udt.Packet.DestinationId">
+            <summary>
+Get or set ID of the destination socket for the packet.
+Default value is 0.
+</summary>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="P:Udt.Packet.TimeStamp">
+            <summary>
+Get or set the time stamp associated with the packet.
+Default value is <see cref="F:System.TimeSpan.Zero" />.
+</summary>
+            <remarks>
+                <para>
+The time stamp is generally the difference between when the
+packet was created and when the socket it was sent on was
+created.
+</para>
+                <para>
+The resolution of this property is 1 microsecond
+(1000 nanoseconds). The resolution of <see cref="T:System.TimeSpan" />
+is 100 nanoseconds. When setting the property, the value will
+be rounded down to the nearest microsecond.
+</para>
+            </remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException">If <paramref name="value" /> is less than <see cref="F:System.TimeSpan.Zero" /> or greater than <see cref="F:Udt.Packet.MaxTimeStamp" />.</exception>
+            <exception cref="T:System.ObjectDisposedException">If the object has been disposed.</exception>
+            <exception cref="T:System.InvalidOperationException">If attempting to set the value and <see cref="P:Udt.Packet.IsEditable" /> is false.</exception>
+        </member>
+        <member name="P:Udt.Packet.IsDisposed">
+            <summary>
+Get true if the packet has been disposed.
+</summary>
+        </member>
+        <member name="P:Udt.Packet.IsEditable">
+            <summary>
+Get true if the packet can be modified.
+</summary>
+        </member>
+        <member name="T:Udt.Packet">
+            <summary>
+UDT data packet.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.AvailableReceiveBuffer">
+            <summary>
+Available receiving buffer size, in bytes.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.AvailableSendBuffer">
+            <summary>
+Available sending buffer size, in bytes.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.BandwidthMbps">
+            <summary>
+Estimated bandwidth, in Mbps.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.RoundtripTime">
+            <summary>
+Round trip time, in milliseconds.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.FlightSize">
+            <summary>
+Number packets on the flight.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.CongestionWindow">
+            <summary>
+Congestion window size, in number of packets.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.FlowWindow">
+            <summary>
+Flow window size, in number of packets.
+</summary>
+        </member>
+        <member name="P:Udt.ProbeTraceInfo.PacketSendPeriod">
+            <summary>
+Packet sending period.
+</summary>
+        </member>
+        <member name="M:Udt.ProbeTraceInfo.#ctor">
+            <summary>
+Initialize a new instance with default values.
+</summary>
+        </member>
+        <member name="T:Udt.ProbeTraceInfo">
+            <summary>
+Performance trace information instant values at the time they are observed.
+</summary>
+        </member>
+    </members>
+</doc>
