@@ -33,7 +33,11 @@ namespace ReliableIM.Event
                 {
                     ParameterInfo[] parameters = method.GetParameters();
                     if (parameters.Length == 1)
-                        RegisterExecutor(parameters[0].ParameterType, new EventExecutorReflection<T>(eventListener, method));
+                        RegisterExecutor(parameters[0].ParameterType, new EventExecutorReflection<T>(
+                                eventListener, 
+                                method, 
+                                (EventHandler) methodAttribute
+                            ));
                 }
             }
         }
