@@ -1,7 +1,5 @@
-﻿using ReliableIM.Network.Protocol.SSL;
-using ReliableIM.Network.Protocol.SSL.Listener;
-using ReliableIM.Network.Protocol.TCP;
-using ReliableIM.Network.Protocol.UDT;
+﻿
+using ReliableIM.Event;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +18,24 @@ namespace ReliableIMClient
         [STAThread]
         static void Main()
         {
-            SslSocket socket = new SslSocket(
-                    new TcpSocket(), 
-                    EncryptionPolicy.AllowNoEncryption,
-                    new BasicSslAuthenticationListener()
-                );
+            EventManager<Event> eventManager = new EventManager<Event>();
+            eventManager.RegisterListener(new KekListener());
+            eventManager.Execute(new KekEvent());
+            Console.ReadLine();
+        }
+    }
 
-            socket.Connect(new IPEndPoint(IPAddress.Parse("74.125.226.7"), 443));
+    class KekEvent : Event
+    {
+
+    }
+
+    class KekListener : IEventListener
+    {
+        [ReliableIM.Event.EventHandler]
+        public void handleEvent(KekEvent test)
+        {
+            Console.WriteLine("Lel ur a fgt");
         }
     }
 }
