@@ -13,13 +13,13 @@ namespace ReliableIM.Contact
         /// Gets the network username of this contact.
         /// </summary>
         /// <returns>Network username.</returns>
-        public string GetUsername();
+        string GetUsername();
 
         /// <summary>
         /// Gets the current client-set display name of this contact.
         /// </summary>
         /// <returns>Display name.</returns>
-        public string GetDisplayName();
+        string GetDisplayName();
 
         /// <summary>
         /// Finds the network online status of this contact.
@@ -28,13 +28,13 @@ namespace ReliableIM.Contact
         /// True if the sender is currently online, and available to recieve messages, 
         /// regardless of the contact's online status (i.e. invisible)
         /// </returns>
-        public bool IsConnected();
+        bool IsConnected();
 
         /// <summary>
         /// Finds the contact status this contact is currently using. Typically,
         /// UNKNOWN is returned if IsConnected() proves false.
         /// </summary>
         /// <returns>Contact status.</returns>
-        public EnumContactStatus GetStatus();
+        EnumContactStatus GetStatus();
     }
 }

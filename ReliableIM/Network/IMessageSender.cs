@@ -19,6 +19,6 @@ namespace ReliableIM.Network
         /// the connection is lost.
         /// </summary>
         /// <returns>A received message.</returns>
-        public IMessage ReceiveMessage();
+        IMessage ReceiveMessage();
     }
 }

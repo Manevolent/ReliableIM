@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol
 {
-    class PacketFactory<T> where T : Packet
+    public class PacketFactory<T> where T : Packet
     {
         private Dictionary<byte, Type> packetMap = new Dictionary<Byte, Type>();
 

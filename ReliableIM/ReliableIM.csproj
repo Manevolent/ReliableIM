@@ -51,9 +51,26 @@
     <Compile Include="Network\IMessageEndpoint.cs" />
     <Compile Include="Network\Protocol\Packet.cs" />
     <Compile Include="Network\Protocol\PacketFactory.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\RimPacket2Connect.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\RimPacket1Ping.cs" />
+    <Compile Include="Network\Protocol\RIM\RimListener.cs" />
+    <Compile Include="Network\Protocol\RIM\RimPacket.cs" />
+    <Compile Include="Network\Protocol\RIM\RimSocket.cs" />
+    <Compile Include="Network\Protocol\SocketListener.cs" />
+    <Compile Include="Network\Protocol\Socket.cs" />
+    <Compile Include="Network\Protocol\SSL\Listener\BasicSslAuthenticationListener.cs" />
+    <Compile Include="Network\Protocol\SSL\Listener\DefaultSslAuthenticationListener.cs" />
+    <Compile Include="Network\Protocol\SSL\Listener\SslAuthenticationListener.cs" />
+    <Compile Include="Network\Protocol\SSL\SslListener.cs" />
+    <Compile Include="Network\Protocol\SSL\SslSocket.cs" />
+    <Compile Include="Network\Protocol\TCP\TcpListener.cs" />
+    <Compile Include="Network\Protocol\TCP\TcpSocket.cs" />
+    <Compile Include="Network\Protocol\UDT\UdtListener.cs" />
+    <Compile Include="Network\Protocol\UDT\UdtSocket.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Network\Protocol\RIM\Handler\" />
+    <Folder Include="Properties\" />
     <Folder Include="Security\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

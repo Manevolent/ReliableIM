@@ -19,6 +19,6 @@ namespace ReliableIM.Network
         /// connected to this receiver.
         /// </summary>
         /// <param name="message">Message body to send.</param>
-        public void SendMessage(MessageBody message);
+        void SendMessage(MessageBody message);
     }
 }

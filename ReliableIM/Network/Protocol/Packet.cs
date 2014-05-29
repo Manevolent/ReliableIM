@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol
 {
-    abstract class Packet
+    public abstract class Packet
     {
         /// <summary>
         /// Gets the ID this packet has been assigned. The type of
