@@ -26,5 +26,10 @@ namespace ReliableIM.Network.Protocol
         /// Closes the listener.
         /// </summary>
         public abstract void Close();
+
+        /// <summary>
+        /// Starts the listener.
+        /// </summary>
+        public abstract void Start();
     }
 }

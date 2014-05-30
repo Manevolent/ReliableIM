@@ -45,5 +45,10 @@ namespace ReliableIM.Network.Protocol.RIM
             //Return the connected socket.
             return socket;
         }
+
+        public override void Start()
+        {
+            baseListener.Start();
+        }
     }
 }

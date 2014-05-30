@@ -29,5 +29,10 @@ namespace ReliableIM.Network.Protocol.TCP
         {
             tcpListener.Stop();
         }
+
+        public override void Start()
+        {
+            tcpListener.Start();
+        }
     }
 }

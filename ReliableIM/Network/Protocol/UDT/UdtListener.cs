@@ -20,10 +20,11 @@ namespace ReliableIM.Network.Protocol.UDT
         public UdtListener(IPEndPoint bindAddress) : this (
                 new Udt.Socket(
                     System.Net.Sockets.AddressFamily.InterNetwork, //IPv4
-                    System.Net.Sockets.SocketType.Dgram //UDP
+                    System.Net.Sockets.SocketType.Stream //UDP
                 )
             )
         {
+            //Do nothing
             udtSocket.Bind(bindAddress);
         }
 
@@ -40,12 +41,20 @@ namespace ReliableIM.Network.Protocol.UDT
 
         public override Socket Accept()
         {
+            if (udtSocket.State != Udt.SocketState.Listening)
+                throw new Exception("UDT socket is not in a listening state.");
+            
             return new UdtSocket(udtSocket.Accept());
         }
 
         public override void Close()
         {
             udtSocket.Close();
+        }
+
+        public override void Start()
+        {
+            udtSocket.Listen(10);
         }
     }
 }

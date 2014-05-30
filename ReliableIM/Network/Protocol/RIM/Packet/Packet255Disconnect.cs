@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol.RIM.Packet
 {
-    public class RimPacket255Disconnect : RimPacket
+    public class Packet255Disconnect : ReliableIM.Network.Protocol.Packet
     {
-        public RimPacket255Disconnect(DisconnectReason disconnectReason)
+        public Packet255Disconnect(DisconnectReason disconnectReason)
         {
             this.Reason = disconnectReason;
+        }
+
+        public Packet255Disconnect()
+            : this(DisconnectReason.GeneralDisconnect)
+        {
         }
 
         /// <summary>
@@ -25,8 +30,6 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
 
         public override void Write(System.IO.BinaryWriter stream)
         {
-            base.Write(stream);
-
             switch (Reason)
             {
                 case DisconnectReason.AuthenticationFailed:
@@ -38,6 +41,12 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
                 case DisconnectReason.ProtocolException:
                     stream.Write((byte)4);
                     break;
+                case DisconnectReason.UnexpectedPacket:
+                    stream.Write((byte)5);
+                    break;
+                case DisconnectReason.ConnectionTimeout:
+                    stream.Write((byte)6);
+                    break;
                 default:
                     stream.Write((byte)1);
                     break;
@@ -46,8 +55,6 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
 
         public override void Read(System.IO.BinaryReader stream)
         {
-            base.Read(stream);
-
             byte reasonId = stream.ReadByte();
 
             switch (reasonId)
@@ -60,6 +67,12 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
                     break;
                 case 4:
                     Reason = DisconnectReason.ProtocolException;
+                    break;
+                case 5:
+                    Reason = DisconnectReason.UnexpectedPacket;
+                    break;
+                case 6:
+                    Reason = DisconnectReason.ConnectionTimeout;
                     break;
                 default:
                     Reason = DisconnectReason.GeneralDisconnect;
@@ -88,7 +101,17 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
             /// <summary>
             /// A protocol exception was encountered, and the connection was terminated to preserve functionality.
             /// </summary>
-            ProtocolException
+            ProtocolException,
+
+            /// <summary>
+            /// A packet that was read was not expected, and the connection was terminated accordingly.
+            /// </summary>
+            UnexpectedPacket,
+
+            /// <summary>
+            /// A read or write timeout occured over the connection.
+            /// </summary>
+            ConnectionTimeout
         }
     }
 }

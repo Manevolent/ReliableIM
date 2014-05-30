@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol.RIM.Handler.Authorized
 {
-    public class RimSocketHandlerAuthorized : RimSocketHandler
+    public class RimPacketHandlerAuthorized : RimPacketHandler
     {
-        public RimSocketHandlerAuthorized(RimSocket socket) : base(socket)
+        public RimPacketHandlerAuthorized(IPacketStream packetStream) : base(packetStream)
         {
             
         }

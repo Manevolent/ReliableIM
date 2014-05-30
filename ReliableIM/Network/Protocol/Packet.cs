@@ -11,7 +11,7 @@ namespace ReliableIM.Network.Protocol
     {
         /// <summary>
         /// Gets the ID this packet has been assigned. The type of
-        /// packet the ID repesents depends on the protocol in use.
+        /// packet the ID represents depends on the protocol in use.
         /// </summary>
         /// <returns>Packet ID.</returns>
         public abstract byte GetPacketID();

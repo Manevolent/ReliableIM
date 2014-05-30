@@ -1,8 +1,10 @@
 ﻿using ReliableIM.Network.Protocol.SSL.Listener;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Security;
+using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,13 +34,15 @@ namespace ReliableIM.Network.Protocol.SSL
             this.listener = authenticationListener;
 
             if (baseSocket.IsConnected())
+            {
                 this.sslStream = new SslStream(
-                        baseSocket.GetStream(), 
-                        false, 
+                        baseSocket.GetStream(),
+                        false,
                         new RemoteCertificateValidationCallback(ValidationCallback),
                         new LocalCertificateSelectionCallback(SelectionCallback),
                         encryptionPolicy
                     );
+            }
         }
 
         /// <summary>
@@ -94,6 +98,10 @@ namespace ReliableIM.Network.Protocol.SSL
             //Connect the base socket to the endpoint
             baseSocket.Connect(endpoint);
 
+            //Make sure it was successful.
+            if (!baseSocket.IsConnected())
+                throw new Exception("Lower-level socket connection failed.");
+
             //Wrap a new SSL stream around the connection.
             sslStream = new SslStream(
                         baseSocket.GetStream(),
@@ -119,6 +127,7 @@ namespace ReliableIM.Network.Protocol.SSL
             if (sslStream.IsAuthenticated)
                 throw new InvalidOperationException("Cannot authenticate SSL because the connection has already been authenticated.");
 
+            //Authenticate SSL as a client.
             sslStream.AuthenticateAsClient(host);
         }
 
@@ -134,6 +143,7 @@ namespace ReliableIM.Network.Protocol.SSL
             if (sslStream.IsAuthenticated)
                 throw new InvalidOperationException("Cannot authenticate SSL because the connection has already been authenticated.");
 
+            //Authenticate SSL as a server.
             sslStream.AuthenticateAsServer(serverCertificate);
         }
 
@@ -144,6 +154,7 @@ namespace ReliableIM.Network.Protocol.SSL
 
         public override void Close()
         {
+            sslStream.Flush();
             sslStream.Close();
         }
     }

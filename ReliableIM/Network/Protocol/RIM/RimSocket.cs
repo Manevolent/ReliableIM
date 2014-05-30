@@ -5,27 +5,29 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol.RIM
 {
-    public class RimSocket : Socket
+    public class RimSocket : Socket, IPacketStream
     {
-        private static PacketFactory<RimPacket> FACTORY = CreateDefaultFactory();
-        private static PacketFactory<RimPacket> CreateDefaultFactory()
+        private static PacketFactory FACTORY = CreateDefaultFactory();
+        private static PacketFactory CreateDefaultFactory()
         {
-            PacketFactory<RimPacket> factory = new PacketFactory<RimPacket>();
+            PacketFactory factory = new PacketFactory();
 
-            factory.RegisterPacket(1, typeof(RimPacket1Ping));
-            factory.RegisterPacket(2, typeof(RimPacket2Connect));
+            factory.RegisterPacket(1, typeof(Packet1Ping));
+            factory.RegisterPacket(2, typeof(Packet2Connect));
 
-            factory.RegisterPacket(255, typeof(RimPacket255Disconnect));
+            factory.RegisterPacket(255, typeof(Packet255Disconnect));
 
             return factory;
         }
 
         private Socket baseSocket;
+        private PacketBuffer packetBuffer;
 
         /// <summary>
         /// Creates a new RIM (Reliable IM) socket. This layer does not provide
@@ -44,8 +46,6 @@ namespace ReliableIM.Network.Protocol.RIM
             this.baseSocket = baseSocket;
         }
 
-        public RimSocketHandler Handler { get; set; }
-
         public override bool IsConnected()
         {
             return baseSocket.IsConnected();
@@ -56,11 +56,9 @@ namespace ReliableIM.Network.Protocol.RIM
             //Connect the lower-level socket.
             baseSocket.Connect(endpoint);
 
-            //Reset our socket handler.
-            Handler = new RimSocketHandlerUnauthorized(this);
-
-            //Start up a new spooler.
-
+            //Make sure it was successful.
+            if (!baseSocket.IsConnected())
+                throw new Exception("Lower-level socket connection failed.");
 
             //Authenticate the other socket as a peer.
             AuthenticatePeer();
@@ -68,38 +66,57 @@ namespace ReliableIM.Network.Protocol.RIM
 
         public void AuthenticatePeer()
         {
-            //Do some handshaking.
+            //Ensure this socket is handling an unauthorized peer.
+            PacketHandler = new RimPacketHandlerUnauthorized(this);
+
+            //Start up a new packet buffer.
+            packetBuffer = new PacketBuffer(this);
+            packetBuffer.Start();
+
+            //Write a connection packet to the endpoint.
+            WritePacket(new Packet2Connect(1));
         }
 
-        /// <summary>
-        /// Writes a packet onto the underlying stream.
-        /// </summary>
-        /// <param name="packet">Packet to write.</param>
-        public void WritePacket(RimPacket packet)
+        public PacketHandler PacketHandler
+        {
+            get;
+            set;
+        }
+
+        public PacketFactory PacketFactory
+        {
+            get
+            {
+                return FACTORY;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void WritePacket(ReliableIM.Network.Protocol.Packet packet)
         {
             //Create a new binary writer to write the packet contents.
             BinaryWriter writer = new BinaryWriter(GetStream());
 
-            //Write the packet ID to the stream.
-            writer.Write(packet.GetPacketID());
+            //Write the packet ID to the stream as a byte.
+            writer.Write((byte) packet.GetPacketID());
 
-            //Write the packet itself onto the stream.
+            //Write the packet body itself onto the stream.
             packet.Write(writer);
 
-            //Flush the data down to the next layer.
             writer.Flush();
         }
 
-        public RimPacket ReadPacket()
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public ReliableIM.Network.Protocol.Packet ReadPacket()
         {
             //Create a new binary reader to read the packet contents.
             BinaryReader reader = new BinaryReader(GetStream());
 
-            //Read the packet ID to the stream.
+            //Read the packet ID byte from the stream.
             byte packetId = reader.ReadByte();
 
             //Construct a new packet instance from the ID read.
-            RimPacket packet = FACTORY.CreateFromId(packetId);
+            ReliableIM.Network.Protocol.Packet packet = FACTORY.CreateFromId(packetId);
 
             //Read the packet contents from the stream.
             packet.Read(reader);
@@ -115,9 +132,6 @@ namespace ReliableIM.Network.Protocol.RIM
 
         public override void Close()
         {
-            //Send a disconnect packet.
-            WritePacket(new RimPacket255Disconnect(RimPacket255Disconnect.DisconnectReason.GeneralDisconnect));
-
             //Close the underlying socket.
             baseSocket.Close();
         }

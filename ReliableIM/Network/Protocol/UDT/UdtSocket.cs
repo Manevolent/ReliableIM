@@ -39,13 +39,13 @@ namespace ReliableIM.Network.Protocol.UDT
         }
 
         /// <summary>
-        /// Creates a new UDT over UDP socket, and connects to the desired endpoint.
+        /// Creates a new UDT over UDP socket, and binds the socket to the address given.
         /// </summary>
-        /// <param name="endpoint">Endpoint to connect to.</param>
-        public UdtSocket(IPEndPoint endpoint) : this()
+        /// <param name="endpoint">Endpoint to bind to.</param>
+        public UdtSocket(IPEndPoint bindAddress) : this()
         {
             //Connect to the endpoint given.
-            Connect(endpoint);
+            udtSocket.Bind(bindAddress);
         }
 
         public override bool IsConnected()
@@ -57,8 +57,15 @@ namespace ReliableIM.Network.Protocol.UDT
 
         public override void Connect(System.Net.IPEndPoint endpoint)
         {
+            if (udtSocket.State != Udt.SocketState.Open && 
+                udtSocket.State != Udt.SocketState.Initial)
+                throw new Exception("UDT socket not ready to connect.");
+
             //Connect this layer to the desired endpoint. UDT should handle this for us.
             udtSocket.Connect(endpoint);
+
+            if (udtSocket.State != Udt.SocketState.Connected)
+                throw new Exception("UDT connect failed.");
 
             //Wrap a new stream around the newly connected socket.
             networkStream = new Udt.NetworkStream(udtSocket);
@@ -72,7 +79,8 @@ namespace ReliableIM.Network.Protocol.UDT
         public override void Close()
         {
             //Close the UDT socket, also closing the UDP/TCP socket and any buffers.
-            udtSocket.Close();
+            networkStream.Flush();
+            networkStream.Close();
         }
     }
 }
