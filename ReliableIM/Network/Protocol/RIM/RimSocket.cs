@@ -1,6 +1,7 @@
 ﻿using ReliableIM.Network.Protocol.RIM.Handler;
 using ReliableIM.Network.Protocol.RIM.Handler.Unauthorized;
 using ReliableIM.Network.Protocol.RIM.Packet;
+using ReliableIM.Security.Signature;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,37 +14,44 @@ namespace ReliableIM.Network.Protocol.RIM
 {
     public class RimSocket : Socket, IPacketStream
     {
-        private static PacketFactory FACTORY = CreateDefaultFactory();
-        private static PacketFactory CreateDefaultFactory()
+        private static readonly uint PROTOCOL_VERSION = 1;
+
+         private static readonly PacketProtocol PROTOCOL = CreateDefaultProtocol();
+        private static PacketProtocol CreateDefaultProtocol()
         {
             PacketFactory factory = new PacketFactory();
 
             factory.RegisterPacket(1, typeof(Packet1Ping));
-            factory.RegisterPacket(2, typeof(Packet2Connect));
+            factory.RegisterPacket(2, typeof(Packet2IdentityRequest));
+            factory.RegisterPacket(3, typeof(Packet3IdentityResponse));
+            factory.RegisterPacket(4, typeof(Packet4Signature));
 
             factory.RegisterPacket(255, typeof(Packet255Disconnect));
 
-            return factory;
+            return new PacketProtocol(factory);
         }
 
         private Socket baseSocket;
         private PacketBuffer packetBuffer;
+        private readonly SignatureAlgorithm signatureAlgorithm;
 
         /// <summary>
         /// Creates a new RIM (Reliable IM) socket. This layer does not provide
         /// message encryption, protocol security, or reliability. Each of these
         /// should be provided in the reference socket.
         /// 
-        /// A typical network stack is as follows:
+        /// A typical protocol stack is as follows:
         ///     Application layer: RIM
         ///     Security layer:    SSL
         ///     Transport layer:   UDT/UDP or TCP
         ///     Network layer:     IP
         /// </summary>
-        /// <param name="baseSocket">Base socket to reference</param>
-        public RimSocket(Socket baseSocket)
+        /// <param name="baseSocket">Base socket to reference.</param>
+        /// <param name="signatureAlgorithm">Signature algorithm to reference.</param>
+        public RimSocket(Socket baseSocket, SignatureAlgorithm signatureAlgorithm)
         {
             this.baseSocket = baseSocket;
+            this.signatureAlgorithm = signatureAlgorithm;
         }
 
         public override bool IsConnected()
@@ -66,15 +74,16 @@ namespace ReliableIM.Network.Protocol.RIM
 
         public void AuthenticatePeer()
         {
-            //Ensure this socket is handling an unauthorized peer.
-            PacketHandler = new RimPacketHandlerUnauthorized(this);
+            if (!baseSocket.IsConnected())
+                throw new InvalidOperationException("Cannot authenticate when no transport connection is established");
+
+            //Ensure this socket is handling an unauthorized peer. Using an authorized handler would be
+            //a serious mistake.
+            PacketHandler = new RimPacketHandlerUnauthorized(this, signatureAlgorithm);
 
             //Start up a new packet buffer.
             packetBuffer = new PacketBuffer(this);
             packetBuffer.Start();
-
-            //Write a connection packet to the endpoint.
-            WritePacket(new Packet2Connect(1));
         }
 
         public PacketHandler PacketHandler
@@ -83,11 +92,11 @@ namespace ReliableIM.Network.Protocol.RIM
             set;
         }
 
-        public PacketFactory PacketFactory
+        public PacketProtocol PacketProtocol
         {
             get
             {
-                return FACTORY;
+                return PROTOCOL;
             }
         }
 
@@ -97,12 +106,10 @@ namespace ReliableIM.Network.Protocol.RIM
             //Create a new binary writer to write the packet contents.
             BinaryWriter writer = new BinaryWriter(GetStream());
 
-            //Write the packet ID to the stream as a byte.
-            writer.Write((byte) packet.GetPacketID());
+            //Write the packet using this protocol.
+            PROTOCOL.WritePacket(writer, packet);
 
-            //Write the packet body itself onto the stream.
-            packet.Write(writer);
-
+            //Flush the packet to the network.
             writer.Flush();
         }
 
@@ -112,14 +119,8 @@ namespace ReliableIM.Network.Protocol.RIM
             //Create a new binary reader to read the packet contents.
             BinaryReader reader = new BinaryReader(GetStream());
 
-            //Read the packet ID byte from the stream.
-            byte packetId = reader.ReadByte();
-
-            //Construct a new packet instance from the ID read.
-            ReliableIM.Network.Protocol.Packet packet = FACTORY.CreateFromId(packetId);
-
-            //Read the packet contents from the stream.
-            packet.Read(reader);
+            //Read the packet using this protocol.
+            ReliableIM.Network.Protocol.Packet packet = PROTOCOL.ReadPacket(reader);
 
             //Return the packet to the caller.
             return packet;

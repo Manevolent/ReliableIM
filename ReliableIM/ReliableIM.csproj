@@ -48,6 +48,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\lib\BouncyCastle.Crypto\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="ManagedOpenSsl">
+      <HintPath>..\lib\ManagedOpenSsl\ManagedOpenSsl.dll</HintPath>
+    </Reference>
+    <Reference Include="Starksoft.Net.Proxy">
+      <HintPath>..\lib\Starksoft.Net.Proxy\Starksoft.Net.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -61,7 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contact\EnumContactStatus.cs" />
-    <Compile Include="Contact\IContact.cs" />
+    <Compile Include="Contact\Contact.cs" />
+    <Compile Include="Contact\Endpoint.cs" />
+    <Compile Include="Contact\Group.cs" />
     <Compile Include="Event\Event.cs" />
     <Compile Include="Event\EventHandler.cs" />
     <Compile Include="Event\EventManager.cs" />
@@ -69,39 +80,59 @@
     <Compile Include="Event\Executor\EventExecutor.cs" />
     <Compile Include="Event\Executor\EventExecutorReflection.cs" />
     <Compile Include="Event\IEventListener.cs" />
-    <Compile Include="Message\IMessage.cs" />
+    <Compile Include="Message\Message.cs" />
     <Compile Include="Network\IMessageReceiver.cs" />
     <Compile Include="Network\IMessageSender.cs" />
-    <Compile Include="Message\MessageBody.cs" />
     <Compile Include="Network\IMessageEndpoint.cs" />
+    <Compile Include="Network\Protocol\ConnectableProxySocket.cs" />
+    <Compile Include="Network\Protocol\GZIP\GZipListener.cs" />
+    <Compile Include="Network\Protocol\GZIP\GZipSocket.cs" />
+    <Compile Include="Network\Protocol\GZIP\GZipStreamDuplex.cs" />
+    <Compile Include="Network\Protocol\IConnectable.cs" />
     <Compile Include="Network\Protocol\IPacketStream.cs" />
     <Compile Include="Network\Protocol\Packet.cs" />
     <Compile Include="Network\Protocol\PacketBuffer.cs" />
     <Compile Include="Network\Protocol\PacketFactory.cs" />
     <Compile Include="Network\Protocol\PacketHandler.cs" />
-    <Compile Include="Network\Protocol\RIM\Handler\Authorized\RimSocketHandlerAuthorized.cs" />
+    <Compile Include="Network\Protocol\PacketProtocol.cs" />
+    <Compile Include="Network\Protocol\Proxy\IProxySocketFactory.cs" />
+    <Compile Include="Network\Protocol\Proxy\StarksoftProxySocketFactory.cs" />
+    <Compile Include="Network\Protocol\RIM\Handler\Authorized\RimPacketHandlerAuthorized.cs" />
     <Compile Include="Network\Protocol\RIM\Handler\RimSocketHandler.cs" />
-    <Compile Include="Network\Protocol\RIM\Handler\Unauthorized\RimSocketHandlerUnauthorized.cs" />
+    <Compile Include="Network\Protocol\RIM\Handler\Unauthorized\RimPacketHandlerUnauthorized.cs" />
     <Compile Include="Network\Protocol\RIM\Packet\Packet255Disconnect.cs" />
-    <Compile Include="Network\Protocol\RIM\Packet\Packet2Connect.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\Packet2IdentityRequest.cs" />
     <Compile Include="Network\Protocol\RIM\Packet\Packet1Ping.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\Packet3IdentityResponse.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\Packet4Signature.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\Signed\Packet1Message.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\Signed\PacketSigned.cs" />
     <Compile Include="Network\Protocol\RIM\RimListener.cs" />
     <Compile Include="Network\Protocol\RIM\RimSocket.cs" />
     <Compile Include="Network\Protocol\SocketListener.cs" />
     <Compile Include="Network\Protocol\Socket.cs" />
-    <Compile Include="Network\Protocol\SSL\Listener\BasicSslAuthenticationListener.cs" />
-    <Compile Include="Network\Protocol\SSL\Listener\DefaultSslAuthenticationListener.cs" />
-    <Compile Include="Network\Protocol\SSL\Listener\SslAuthenticationListener.cs" />
+    <Compile Include="Network\Protocol\SSL\Listener\SslAuthenticationListenerPeer.cs" />
+    <Compile Include="Network\Protocol\SSL\Listener\ISslAuthenticationListener.cs" />
     <Compile Include="Network\Protocol\SSL\SslListener.cs" />
     <Compile Include="Network\Protocol\SSL\SslSocket.cs" />
     <Compile Include="Network\Protocol\TCP\TcpListener.cs" />
     <Compile Include="Network\Protocol\TCP\TcpSocket.cs" />
     <Compile Include="Network\Protocol\UDT\UdtListener.cs" />
     <Compile Include="Network\Protocol\UDT\UdtSocket.cs" />
+    <Compile Include="Security\Certificate\CertificateGenerator.cs" />
+    <Compile Include="Security\Signature\BinaryIdentity.cs" />
+    <Compile Include="Security\Signature\Identity.cs" />
+    <Compile Include="Security\Signature\RSA\RSAIdentity.cs" />
+    <Compile Include="Security\Signature\RSA\RSASignature.cs" />
+    <Compile Include="Security\Signature\Signature.cs" />
+    <Compile Include="Security\Signature\SignatureAlgorithm.cs" />
+    <Compile Include="Security\Signature\RSA\RSASignatureAlgorithm.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Event\Type\" />
+    <Folder Include="Network\Protocol\SPL\" />
     <Folder Include="Properties\" />
-    <Folder Include="Security\" />
+    <Folder Include="Security\Signature\DSA\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

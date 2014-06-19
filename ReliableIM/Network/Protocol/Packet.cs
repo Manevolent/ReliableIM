@@ -17,13 +17,13 @@ namespace ReliableIM.Network.Protocol
         public abstract byte GetPacketID();
 
         /// <summary>
-        /// Write the packet data onto the given stream.
+        /// Write the data onto the given stream.
         /// </summary>
         /// <param name="stream">Stream to write to.</param>
         public abstract void Write(BinaryWriter stream);
 
         /// <summary>
-        /// Reads the packet data from the given stream.
+        /// Reads the data from the given stream.
         /// </summary>
         /// <param name="stream">Stream to read from.</param>
         public abstract void Read(BinaryReader stream);

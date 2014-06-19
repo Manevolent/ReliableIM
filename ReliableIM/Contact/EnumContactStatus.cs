@@ -8,9 +8,9 @@ namespace ReliableIM.Contact
 {
     public enum EnumContactStatus
     {
-        ONLINE,
-        BUSY,
-        INVISIBLE,
-        UNKNOWN
+        Online,
+        Busy,
+        Invisible,
+        Unknown
     }
 }

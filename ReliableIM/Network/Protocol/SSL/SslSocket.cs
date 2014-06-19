@@ -1,11 +1,11 @@
-﻿using ReliableIM.Network.Protocol.SSL.Listener;
+﻿using OpenSSL.SSL;
+using OpenSSL.X509;
+using ReliableIM.Network.Protocol.SSL.Listener;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Security;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,8 +16,7 @@ namespace ReliableIM.Network.Protocol.SSL
         private Socket baseSocket;
 
         private SslStream sslStream;
-        private EncryptionPolicy encryptionPolicy;
-        private SslAuthenticationListener listener;
+        private ISslAuthenticationListener listener;
 
         /// <summary>
         /// Creates a new SSL socket, based on a lower-level transport socket.
@@ -25,12 +24,10 @@ namespace ReliableIM.Network.Protocol.SSL
         /// UDT or TCP is required at this layer.
         /// </summary>
         /// <param name="baseSocket">Base socket to reference.</param>
-        /// <param name="encryptionPolicy">Encryption policy to enforce on connections.</param>
         /// <param name="authenticationListener">SSL authentication listener responsible for checking remote certificates.</param>
-        public SslSocket(Socket baseSocket, EncryptionPolicy encryptionPolicy, SslAuthenticationListener authenticationListener)
+        public SslSocket(Socket baseSocket, ISslAuthenticationListener authenticationListener)
         {
             this.baseSocket = baseSocket;
-            this.encryptionPolicy = encryptionPolicy;
             this.listener = authenticationListener;
 
             if (baseSocket.IsConnected())
@@ -38,9 +35,8 @@ namespace ReliableIM.Network.Protocol.SSL
                 this.sslStream = new SslStream(
                         baseSocket.GetStream(),
                         false,
-                        new RemoteCertificateValidationCallback(ValidationCallback),
-                        new LocalCertificateSelectionCallback(SelectionCallback),
-                        encryptionPolicy
+                        new RemoteCertificateValidationHandler(ValidationCallback),
+                        new LocalCertificateSelectionHandler(SelectionCallback)
                     );
             }
         }
@@ -57,8 +53,7 @@ namespace ReliableIM.Network.Protocol.SSL
         /// <param name="baseSocket">Base socket to reference.</param>
         public SslSocket(Socket baseSocket) : this (
                 baseSocket,
-                EncryptionPolicy.RequireEncryption,
-                new DefaultSslAuthenticationListener()
+                new SslAuthenticationListenerPeer()
             )
         {
             //Do nothing.
@@ -68,19 +63,20 @@ namespace ReliableIM.Network.Protocol.SSL
         private bool ValidationCallback (
                 object sender, 
                 X509Certificate certificate, 
-                X509Chain chain, 
-                SslPolicyErrors sslPolicyErrors
+                X509Chain chain,
+                int i,
+                VerifyResult verifyResult
             )
         {
             //Default to the listener to provide validation.
-            return listener.Authenticate(certificate, chain, sslPolicyErrors);
+            return listener.Authenticate(certificate, chain, verifyResult);
         }
 
         //Bridge delegate to handle local certificate selection:
         private X509Certificate SelectionCallback(
                 object sender,
                 string targetHost,
-                X509CertificateCollection localCertificates,
+                X509List localCertificates,
                 X509Certificate remoteCertificate,
                 string[] acceptableIssuers
             )
@@ -106,9 +102,8 @@ namespace ReliableIM.Network.Protocol.SSL
             sslStream = new SslStream(
                         baseSocket.GetStream(),
                         false,
-                        new RemoteCertificateValidationCallback(ValidationCallback),
-                        new LocalCertificateSelectionCallback(SelectionCallback),
-                        encryptionPolicy
+                        new RemoteCertificateValidationHandler(ValidationCallback),
+                        new LocalCertificateSelectionHandler(SelectionCallback)
                     );
 
             //Authenticate as a client. The SslListener class should authenticate the socket as a server.

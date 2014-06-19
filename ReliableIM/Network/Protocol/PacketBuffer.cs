@@ -55,9 +55,7 @@ namespace ReliableIM.Network.Protocol
         private void run()
         {
             while (stream.IsConnected())
-            {
                 stream.PacketHandler.HandlePacket(stream.ReadPacket());
-            }
         }
     }
 }

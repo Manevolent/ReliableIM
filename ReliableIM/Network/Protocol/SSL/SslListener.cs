@@ -1,9 +1,8 @@
-﻿using ReliableIM.Network.Protocol.SSL.Listener;
+﻿using OpenSSL.X509;
+using ReliableIM.Network.Protocol.SSL.Listener;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,10 +12,9 @@ namespace ReliableIM.Network.Protocol.SSL
     {
         private SocketListener baseListener;
         private X509Certificate serverCertificate;
-        private EncryptionPolicy encryptionPolicy;
-        private SslAuthenticationListener authenticationListener;
+        private ISslAuthenticationListener authenticationListener;
 
-        public SslListener(SocketListener baseListener, X509Certificate serverCertificate, EncryptionPolicy encryptionPolicy, SslAuthenticationListener listener)
+        public SslListener(SocketListener baseListener, X509Certificate serverCertificate, ISslAuthenticationListener listener)
         {
             //The listener is used to accept a socket capable of basic data transport, e.g. UDT.
             this.baseListener = baseListener;
@@ -24,8 +22,7 @@ namespace ReliableIM.Network.Protocol.SSL
             //The certificate is used in the AuthenticateAsServer SSL method.
             this.serverCertificate = serverCertificate;
 
-            //Set the listener and encryption policy.
-            this.encryptionPolicy = encryptionPolicy;
+            //Set the listener.
             this.authenticationListener = listener;
         }
 
@@ -33,8 +30,7 @@ namespace ReliableIM.Network.Protocol.SSL
             : this(
                 baseListener,
                 serverCertificate,
-                EncryptionPolicy.RequireEncryption,
-                new DefaultSslAuthenticationListener()
+                new SslAuthenticationListenerPeer()
             )
         {
             //Do nothing.
@@ -48,7 +44,7 @@ namespace ReliableIM.Network.Protocol.SSL
         public override Socket Accept()
         {
             //Accept a lower-level socket, and wrap it into an SslSocket instance for management.
-            SslSocket socket = new SslSocket(baseListener.Accept(), encryptionPolicy, authenticationListener);
+            SslSocket socket = new SslSocket(baseListener.Accept(), authenticationListener);
 
             //Authenticate the remote endpoint with ourselves assuming the role of a server.
             socket.AuthenticateAsServer(serverCertificate);

@@ -32,7 +32,10 @@ namespace ReliableIM.Network.Protocol.RIM.Handler
                         HandlePing((Packet1Ping) packet);
                         break;
                     case 2:
-                        HandleConnect((Packet2Connect)packet);
+                        HandleIdentityRequest((Packet2IdentityRequest)packet);
+                        break;
+                    case 3:
+                        HandleIdentityResponse((Packet3IdentityResponse)packet);
                         break;
                     case 255:
                         HandleDisconnect((Packet255Disconnect)packet);
@@ -42,7 +45,6 @@ namespace ReliableIM.Network.Protocol.RIM.Handler
                         break;
                 }
             } catch (Exception ex) {
-                throw ex;
                 Disconnect(Packet255Disconnect.DisconnectReason.ProtocolException);
             }
         }
@@ -73,10 +75,8 @@ namespace ReliableIM.Network.Protocol.RIM.Handler
         }
 
 //
-
         private void HandlePing(Packet1Ping ping)
         {
-            Console.WriteLine(ping.Key + " : " + ping.Mode);
             if (ping.Mode == Packet1Ping.PingMode.Response)
             {
                 if (pinging && ping.Key == lastPingKey)
@@ -96,7 +96,15 @@ namespace ReliableIM.Network.Protocol.RIM.Handler
                 Disconnect(Packet255Disconnect.DisconnectReason.UnexpectedPacket);
             }
         }
-        protected virtual void HandleConnect(Packet2Connect connect)
+        protected virtual void HandleIdentityRequest(Packet2IdentityRequest request)
+        {
+            Disconnect(Packet255Disconnect.DisconnectReason.UnexpectedPacket);
+        }
+        protected virtual void HandleIdentityResponse(Packet3IdentityResponse response)
+        {
+            Disconnect(Packet255Disconnect.DisconnectReason.UnexpectedPacket);
+        }
+        protected virtual void HandleSignature(Packet4Signature signature)
         {
             Disconnect(Packet255Disconnect.DisconnectReason.UnexpectedPacket);
         }
@@ -105,7 +113,6 @@ namespace ReliableIM.Network.Protocol.RIM.Handler
             Console.WriteLine("Disconnected by endpoint: " + disconnect.Reason);
             Stream.Close();
         }
-
 //
 
         public void Disconnect(Packet255Disconnect.DisconnectReason reason)

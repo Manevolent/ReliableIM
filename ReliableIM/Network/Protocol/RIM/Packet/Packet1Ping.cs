@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol.RIM.Packet
 {
-    public class Packet1Ping : ReliableIM.Network.Protocol.Packet
+    public sealed class Packet1Ping : ReliableIM.Network.Protocol.Packet
     {
         private long pingKey = 0;
         private PingMode pingMode = PingMode.Unknown;

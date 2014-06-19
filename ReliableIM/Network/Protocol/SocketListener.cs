@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol
 {
+    /// <summary>
+    /// Provides a managed wrapper around a socket listener, or a socket in a
+    /// server-state. Different implementations of a socket listener will perform
+    /// differently and may include their own protocols at its level.
+    /// </summary>
     public abstract class SocketListener
     {
         /// <summary>

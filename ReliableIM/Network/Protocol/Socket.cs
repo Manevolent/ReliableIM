@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol
 {
+    /// <summary>
+    /// Represents the basic, managed implementation of a network socket. This low-level
+    /// class provides a stream to send and recieve data over the network connection it
+    /// represents.
+    /// </summary>
     public abstract class Socket
     {
 

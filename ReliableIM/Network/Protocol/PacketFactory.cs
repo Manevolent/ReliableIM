@@ -28,9 +28,9 @@ namespace ReliableIM.Network.Protocol
         public Packet CreateFromId(byte packetId)
         {
             if (!packetMap.ContainsKey(packetId))
-                return null;
+                throw new NotSupportedException("Packet type not supported.");
             else
-                return (Packet) Activator.CreateInstance(packetMap[packetId]);
+                return (Packet)Activator.CreateInstance(packetMap[packetId]);
         }
     }
 }

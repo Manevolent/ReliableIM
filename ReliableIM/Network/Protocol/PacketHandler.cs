@@ -33,7 +33,7 @@ namespace ReliableIM.Network.Protocol
         public abstract void HandlePacket(Packet packet);
 
         /// <summary>
-        /// Calls for this packet handle to send a ping.
+        /// Calls for this packet handler to send a ping.
         /// </summary>
         public abstract void Ping();
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReliableIM.Security.Signature;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +9,18 @@ namespace ReliableIM.Network.Protocol.RIM
 {
     public class RimListener : SocketListener
     {
-        private SocketListener baseListener;
+        private readonly SocketListener baseListener;
+        private readonly SignatureAlgorithm signatureAlgorithm;
 
         /// <summary>
         /// Creates a new RIM (Reliable IM) socket listener.
         /// </summary>
         /// <param name="baseListener">Base listener to reference.</param>
-        public RimListener(SocketListener baseListener)
+        /// <param name="signatureAlgorithm">Signature algorithm to reference.</param>
+        public RimListener(SocketListener baseListener, SignatureAlgorithm signatureAlgorithm)
         {
             this.baseListener = baseListener;
+            this.signatureAlgorithm = signatureAlgorithm;
         }
 
         public override void Close()
@@ -33,7 +37,7 @@ namespace ReliableIM.Network.Protocol.RIM
         public override Socket Accept()
         {
             //Accept a client socket from the lower-level listener.
-            RimSocket socket = new RimSocket(baseListener.Accept());
+            RimSocket socket = new RimSocket(baseListener.Accept(), signatureAlgorithm);
 
             //Authenticate the socket as a peer.
             socket.AuthenticatePeer();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Network.Protocol.RIM.Packet
 {
-    public class Packet255Disconnect : ReliableIM.Network.Protocol.Packet
+    public sealed class Packet255Disconnect : ReliableIM.Network.Protocol.Packet
     {
         public Packet255Disconnect(DisconnectReason disconnectReason)
         {
@@ -47,6 +47,9 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
                 case DisconnectReason.ConnectionTimeout:
                     stream.Write((byte)6);
                     break;
+                case DisconnectReason.UnsupportedVersion:
+                    stream.Write((byte)7);
+                    break;
                 default:
                     stream.Write((byte)1);
                     break;
@@ -73,6 +76,9 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
                     break;
                 case 6:
                     Reason = DisconnectReason.ConnectionTimeout;
+                    break;
+                case 7:
+                    Reason = DisconnectReason.UnsupportedVersion;
                     break;
                 default:
                     Reason = DisconnectReason.GeneralDisconnect;
@@ -111,7 +117,12 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
             /// <summary>
             /// A read or write timeout occured over the connection.
             /// </summary>
-            ConnectionTimeout
+            ConnectionTimeout,
+
+            /// <summary>
+            /// The protocol version requested by the peer is not supported by the disconnecting endpoint.
+            /// </summary>
+            UnsupportedVersion
         }
     }
 }

@@ -15,9 +15,9 @@ namespace ReliableIM.Network.Protocol
         PacketHandler PacketHandler { get; set; }
 
         /// <summary>
-        /// The packet factory responsible for creating packets from their identifiers.
+        /// The packet protocol responsible for handling the reading and writing of packets.
         /// </summary>
-        PacketFactory PacketFactory { get; }
+        PacketProtocol PacketProtocol { get; }
 
         /// <summary>
         /// Reads a packet from the underlying stream.
