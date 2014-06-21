@@ -81,7 +81,7 @@ namespace ReliableIM.Network.Protocol.ESL
             //Write the encrypted contents to the underlying stream with an HMAC.
             BinaryWriter binaryWriter = new BinaryWriter(baseStream);
             Packet.WriteBytes(binaryWriter, encryptedBuffer);
-            Packet.WriteBytes(binaryWriter, outputHmac.ComputeHash(encryptedBuffer));
+            binaryWriter.Write(outputHmac.ComputeHash(encryptedBuffer));
             binaryWriter.Flush();
 
             //Reset the output buffer for future write operations.
@@ -141,11 +141,13 @@ namespace ReliableIM.Network.Protocol.ESL
             //While we don't have enough bytes for the upper-level stream, read more from the network.
             while (inputBuffer.Length < count)
             {
-                //Read in the encrypted data and its HMAC and ensure the data has not been tampered.
+                //Read in the encrypted data.
                 BinaryReader binaryReader = new BinaryReader(baseStream);
                 byte[] encryptedBuffer = Packet.ReadBytes(binaryReader);
-                byte[] hmac = Packet.ReadBytes(binaryReader);
 
+                //Read in the HMAC and ensure the data has not been tampered.
+                byte[] hmac = new byte[inputHmac.HashSize / 8];
+                baseStream.Read(hmac, 0, hmac.Length);
                 if (!inputHmac.ComputeHash(encryptedBuffer).SequenceEqual(hmac))
                     throw new SecurityException("Recieved HMAC does not match expected cryptographic digest.");
 
