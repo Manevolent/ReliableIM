@@ -81,9 +81,6 @@
     <Compile Include="Event\Executor\EventExecutorReflection.cs" />
     <Compile Include="Event\IEventListener.cs" />
     <Compile Include="Message\Message.cs" />
-    <Compile Include="Network\IMessageReceiver.cs" />
-    <Compile Include="Network\IMessageSender.cs" />
-    <Compile Include="Network\IMessageEndpoint.cs" />
     <Compile Include="Network\Protocol\ConnectableProxySocket.cs" />
     <Compile Include="Network\Protocol\GZIP\GZipListener.cs" />
     <Compile Include="Network\Protocol\GZIP\GZipSocket.cs" />
@@ -97,9 +94,12 @@
     <Compile Include="Network\Protocol\PacketProtocol.cs" />
     <Compile Include="Network\Protocol\Proxy\IProxySocketFactory.cs" />
     <Compile Include="Network\Protocol\Proxy\StarksoftProxySocketFactory.cs" />
+    <Compile Include="Network\Protocol\ESL\EncryptedSocket.cs" />
+    <Compile Include="Network\Protocol\ESL\EncryptedSocketListener.cs" />
     <Compile Include="Network\Protocol\RIM\Handler\Authorized\RimPacketHandlerAuthorized.cs" />
     <Compile Include="Network\Protocol\RIM\Handler\RimSocketHandler.cs" />
     <Compile Include="Network\Protocol\RIM\Handler\Unauthorized\RimPacketHandlerUnauthorized.cs" />
+    <Compile Include="Network\Protocol\RIM\Packet\Packet100ContactStatus.cs" />
     <Compile Include="Network\Protocol\RIM\Packet\Packet255Disconnect.cs" />
     <Compile Include="Network\Protocol\RIM\Packet\Packet2IdentityRequest.cs" />
     <Compile Include="Network\Protocol\RIM\Packet\Packet1Ping.cs" />
@@ -120,19 +120,34 @@
     <Compile Include="Network\Protocol\UDT\UdtListener.cs" />
     <Compile Include="Network\Protocol\UDT\UdtSocket.cs" />
     <Compile Include="Security\Certificate\CertificateGenerator.cs" />
+    <Compile Include="Security\Exchange\ECDH\ECDHKeyExchangeAlgorithm.cs" />
+    <Compile Include="Security\Exchange\KeyExchangeAlgorithm.cs" />
+    <Compile Include="Security\Exchange\RSA\RSAKeyExchangeAlgorithm.cs" />
+    <Compile Include="Security\Signature\BinaryIdentityVerifier.cs" />
+    <Compile Include="Security\Signature\DefaultIdentityVerifier.cs" />
+    <Compile Include="Security\Signature\AnonymousIdentityVerifier.cs" />
+    <Compile Include="Security\Signature\IIdentityVerifier.cs" />
+    <Compile Include="Security\Signature\SignatureStore.cs" />
+    <Compile Include="Security\Symmetric\AES\AESAlgorithmFactory.cs" />
+    <Compile Include="Security\Symmetric\AES\AESKey.cs" />
+    <Compile Include="Security\Symmetric\SymmetricAlgorithmFactory.cs" />
+    <Compile Include="Security\Symmetric\SymmetricKey.cs" />
     <Compile Include="Security\Signature\BinaryIdentity.cs" />
+    <Compile Include="Security\Signature\DSA\DSAIdentity.cs" />
+    <Compile Include="Security\Signature\DSA\DSASignature.cs" />
+    <Compile Include="Security\Signature\DSA\DSASignatureAlgorithm.cs" />
     <Compile Include="Security\Signature\Identity.cs" />
     <Compile Include="Security\Signature\RSA\RSAIdentity.cs" />
     <Compile Include="Security\Signature\RSA\RSASignature.cs" />
     <Compile Include="Security\Signature\Signature.cs" />
     <Compile Include="Security\Signature\SignatureAlgorithm.cs" />
     <Compile Include="Security\Signature\RSA\RSASignatureAlgorithm.cs" />
+    <Compile Include="Security\Symmetric\SymmetricKeyPair.cs" />
+    <Compile Include="Network\Protocol\ESL\EncryptedStreamDuplex.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Event\Type\" />
-    <Folder Include="Network\Protocol\SPL\" />
     <Folder Include="Properties\" />
-    <Folder Include="Security\Signature\DSA\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

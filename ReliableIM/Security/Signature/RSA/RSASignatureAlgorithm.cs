@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Security.Signature.RSA
 {
-    public class RSASignatureAlgorithm : SignatureAlgorithm
+    public sealed class RSASignatureAlgorithm : SignatureAlgorithm
     {
         private static readonly Dictionary<int, int> KEYSIZE_MAP = CreateKeySizeMap();
         private static Dictionary<int, int> CreateKeySizeMap()
@@ -59,7 +59,15 @@ namespace ReliableIM.Security.Signature.RSA
 
             //Compute the identity.
             RSAParameters parameters = rsa.ExportParameters(false);
-            this.identity = new RSAIdentity(Checksum(parameters.Exponent, parameters.Modulus));
+            this.identity = new RSAIdentity(parameters);
+        }
+
+        public RSACryptoServiceProvider RSA
+        {
+            get
+            {
+                return rsa;
+            }
         }
 
         public override Signature Sign(byte[] data)
@@ -80,26 +88,34 @@ namespace ReliableIM.Security.Signature.RSA
                 return new RSASignature(
                         data, //Supply the data itself.
                         identity, //Supply the identity to ensure parties know who signed the data.
-                        rsa.SignData(hashAlgorithm.ComputeHash(data), hashAlgorithm) //Sign the data.
+                        rsa.SignData(data, hashAlgorithm) //Sign the data.
                 );
+            }
+        }
+
+        public override bool CanSign
+        {
+            get
+            {
+                return !rsa.PublicOnly;
             }
         }
 
         public override bool Verify(Signature signature)
         {
+            //Verify the signature's type is an RSA signature.
+            if (!(signature is RSA.RSASignature))
+                throw new SecurityException("Signature is not an RSA signature.");
+
+            //Verify the identity of the signature matches this signature algorithm.
+            if (!signature.Identity.Equals(identity))
+                throw new SecurityException("Signature's identity does not match.");
+
             lock (hashAlgorithm)
             {
                 //Initialize the hash algorithm to ensure all previous buffers are clear.
                 hashAlgorithm.Initialize();
-
-                //Verify the signature's type is an RSA signature.
-                if (!(signature is RSA.RSASignature))
-                    throw new SecurityException("Signature is not an RSA signature.");
-
-                //Verify the identity of the signature matches this signature algorithm.
-                if (!signature.Identity.Equals(identity))
-                    throw new SecurityException("Signature's identity does not match.");
-
+                
                 //Verify the data by hashing the message, then comparing the resulting
                 //digest with the public-key-decrypted result of the data signature.
                 return rsa.VerifyData(
@@ -110,26 +126,25 @@ namespace ReliableIM.Security.Signature.RSA
             }
         }
 
-        private byte[] Checksum(params byte[][] sources)
+        public override Identity Identity
         {
-            lock (hashAlgorithm)
+            get
             {
-                hashAlgorithm.Initialize();
-
-                foreach (byte[] source in sources)
-                {
-                    hashAlgorithm.TransformBlock(source, 0, source.Length, null, 0);
-                }
-
-                hashAlgorithm.TransformFinalBlock(new byte[0], 0, 0);
-
-                return hashAlgorithm.Hash;
+                return identity;
             }
         }
 
-        public override Identity GetIdentity()
+        public override string Name
         {
-            return identity;
+            get
+            {
+                return "RSA" + rsa.KeySize + "SHA" + hashAlgorithm.HashSize;
+            }
+        }
+
+        public override IIdentityVerifier CreateIdentityVerifier()
+        {
+            return new BinaryIdentityVerifier(identity);
         }
 
 // Packet
@@ -160,11 +175,6 @@ namespace ReliableIM.Security.Signature.RSA
 
             //Initialize the algorithm.
             InitializeAlgorithm(rsa, new SHA1Managed());
-        }
-
-        public override string GetName()
-        {
-            return "RSA" + rsa.KeySize + "SHA" + hashAlgorithm.HashSize;
         }
     }
 }

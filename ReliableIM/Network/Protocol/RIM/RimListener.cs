@@ -11,16 +11,19 @@ namespace ReliableIM.Network.Protocol.RIM
     {
         private readonly SocketListener baseListener;
         private readonly SignatureAlgorithm signatureAlgorithm;
+        private readonly IIdentityVerifier identityVerifier;
 
         /// <summary>
         /// Creates a new RIM (Reliable IM) socket listener.
         /// </summary>
         /// <param name="baseListener">Base listener to reference.</param>
         /// <param name="signatureAlgorithm">Signature algorithm to reference.</param>
-        public RimListener(SocketListener baseListener, SignatureAlgorithm signatureAlgorithm)
+        /// <param name="identityVerifier">Identity verifier to use when verifying connecting peers.</param>
+        public RimListener(SocketListener baseListener, SignatureAlgorithm signatureAlgorithm, IIdentityVerifier identityVerifier)
         {
             this.baseListener = baseListener;
             this.signatureAlgorithm = signatureAlgorithm;
+            this.identityVerifier = identityVerifier;
         }
 
         public override void Close()
@@ -37,7 +40,7 @@ namespace ReliableIM.Network.Protocol.RIM
         public override Socket Accept()
         {
             //Accept a client socket from the lower-level listener.
-            RimSocket socket = new RimSocket(baseListener.Accept(), signatureAlgorithm);
+            RimSocket socket = new RimSocket(baseListener.Accept(), signatureAlgorithm, identityVerifier);
 
             //Authenticate the socket as a peer.
             socket.AuthenticatePeer();

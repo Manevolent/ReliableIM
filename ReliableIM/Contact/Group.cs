@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReliableIM.Security.Signature;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,18 @@ using System.Threading.Tasks;
 
 namespace ReliableIM.Contact
 {
-    public class Group : Endpoint
+    public sealed class Group : Endpoint
     {
         private readonly Contact owner;
         private readonly List<Contact> members;
 
-        public Group(Contact owner, List<Contact> members, string fingerprint, string displayName) : base(fingerprint, displayName)
+        /// <summary>
+        /// Constructs a new Group.
+        /// </summary>
+        /// <param name="owner">Owner of the group.</param>
+        /// <param name="members">Group member list.</param>
+        /// <param name="identity">Group identity.</param>
+        public Group(Contact owner, List<Contact> members, Identity identity) : base(identity)
         {
             this.owner = owner;
             this.members = members;
@@ -42,15 +49,10 @@ namespace ReliableIM.Contact
             }
         }
 
-        public override void SendMessage(Message.Message message)
+        public override void SendSignature(Signature signature)
         {
             foreach (Contact contact in members)
-                contact.SendMessage(message);
-        }
-
-        public override Message.Message ReceiveMessage()
-        {
-            throw new NotImplementedException();
+                contact.SendSignature(signature);
         }
 
         public override void Connect()
@@ -64,6 +66,15 @@ namespace ReliableIM.Contact
                 {
                     //Do nothing.
                 }
+        }
+
+        public override bool IsValidSender(Identity identity)
+        {
+            foreach (Contact contact in members)
+                if (contact.Identity.Equals(identity))
+                    return true;
+
+            return false;
         }
     }
 }

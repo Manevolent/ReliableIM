@@ -40,5 +40,10 @@ namespace ReliableIM.Security.Signature
         {
             identity = Packet.ReadBytes(stream);
         }
+
+        public override byte[] toByteArray()
+        {
+            return identity;
+        }
     }
 }

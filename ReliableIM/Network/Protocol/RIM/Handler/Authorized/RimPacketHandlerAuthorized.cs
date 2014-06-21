@@ -26,20 +26,29 @@ namespace ReliableIM.Network.Protocol.RIM.Handler.Authorized
         /// </summary>
         private Contact.Contact contact;
 
-        public RimPacketHandlerAuthorized(IPacketStream packetStream, Contact.Contact contact) : base(packetStream)
+        public RimPacketHandlerAuthorized(IPacketStream packetStream, Contact.Contact contact, SignatureAlgorithm localSignatureAlgorithm) : base(packetStream)
         {
-            this.contact = contact;   
+            this.contact = contact;
+
+            Console.WriteLine("Connected to " + contact.Identity.GetFingerprintString() + ".");
+
+            Stream.WritePacket(new Packet4Signature(new Packet1Message(contact.Identity, "Kekkoning is stronk!").ToSignature(localSignatureAlgorithm)));
         }
 
         protected override void HandleSignature(Packet4Signature signature)
         {
             //Find an appropriate signature algorithm to use with this signature.
-            SignatureAlgorithm selectedAlgorithm = null;
+            SignatureAlgorithm selectedAlgorithm = contact.SignatureAlgorithm;
 
             //Read the packet contents (This is an important process. At this point, we validate the sender.)
-            PacketSigned packet = PacketSigned.FromSignature(signature.Signature, selectedAlgorithm, SIGNED_FACTORY);
+            PacketSigned packet = PacketSigned.FromSignature(
+                signature.Signature,
+                contact.Identity,
+                selectedAlgorithm,
+                SIGNED_FACTORY
+            );
             
-            //Warning: Sender is now verified and trusted!
+            //Warning: Sender is now verified and trusted.
 
             //Handle the packet:
             switch (packet.GetPacketID())
@@ -52,9 +61,16 @@ namespace ReliableIM.Network.Protocol.RIM.Handler.Authorized
             }
         }
 
+//
         private void HandleMessage(Packet1Message message)
         {
+            
+        }
+//
 
+        protected override void HandleContactStatus(Packet100ContactStatus contactStatus)
+        {
+            contact.Status = contactStatus.Status;
         }
     }
 }

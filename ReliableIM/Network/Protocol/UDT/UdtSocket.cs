@@ -26,7 +26,7 @@ namespace ReliableIM.Network.Protocol.UDT
         }
 
         /// <summary>
-        /// Creates a new UDP over UDP  socket.
+        /// Creates a new UDT over UDP socket.
         /// </summary>
         public UdtSocket() : this (
                 new Udt.Socket(

@@ -1,13 +1,19 @@
 ﻿using OpenSSL.Core;
 using OpenSSL.X509;
 using ReliableIM.Network.Protocol;
+using ReliableIM.Network.Protocol.ESL;
 using ReliableIM.Network.Protocol.GZIP;
 using ReliableIM.Network.Protocol.RIM;
 using ReliableIM.Network.Protocol.SSL;
 using ReliableIM.Network.Protocol.TCP;
 using ReliableIM.Network.Protocol.UDT;
 using ReliableIM.Security.Certificate;
+using ReliableIM.Security.Exchange.DH;
+using ReliableIM.Security.Exchange.RSA;
+using ReliableIM.Security.Signature;
+using ReliableIM.Security.Signature.DSA;
 using ReliableIM.Security.Signature.RSA;
+using ReliableIM.Security.Symmetric.AES;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -24,6 +30,18 @@ namespace ReliableIMClient
     {
         private static IPEndPoint serverAddress;
         private static bool started;
+
+        private static readonly RSASignatureAlgorithm client =
+                    new RSASignatureAlgorithm(
+                        new RSACryptoServiceProvider(),
+                        new SHA1Managed()
+                    );
+
+        private static readonly RSASignatureAlgorithm server =
+                    new RSASignatureAlgorithm(
+                        new RSACryptoServiceProvider(),
+                        new SHA1Managed()
+                    );
         
         static void ServerThread()
         {
@@ -32,20 +50,14 @@ namespace ReliableIMClient
 
             RimListener listener = new RimListener(
                 new GZipListener(
-                    new SslListener(
+                    new EncryptedSocketListener(
                         new TcpListener(serverAddress),
-                        CertificateGenerator.GenerateSelfSignedCertificate(
-                                "CN=localhost",
-                                "CN=localhost",
-                                CertificateGenerator.GenerateCACertificate("CN=localhost")
-                        )
+                        new RSAKeyExchangeAlgorithm(server.RSA, new AnonymousIdentityVerifier(), new AESAlgorithmFactory(256, CipherMode.CBC, PaddingMode.PKCS7))
                     ),
                     CompressionLevel.Optimal
                 ),
-                new RSASignatureAlgorithm(
-                    new RSACryptoServiceProvider(),
-                    new SHA1Managed()
-                )
+                server,
+                new AnonymousIdentityVerifier()
             );
 
             listener.Start();
@@ -80,20 +92,21 @@ namespace ReliableIMClient
             thread.Start();
             while (!started) ;
 
+            IIdentityVerifier serverIdentityVerifier = new BinaryIdentityVerifier((BinaryIdentity)server.Identity);
+
             for (int i = 0; i < 20; i++)
             {
                 //Create client and connect.
                 RimSocket clientSocket = new RimSocket(
                     new GZipSocket(
-                        new SslSocket(
-                            new TcpSocket()
+                        new EncryptedSocket(
+                            new TcpSocket(),
+                            new RSAKeyExchangeAlgorithm(client.RSA, serverIdentityVerifier, new AESAlgorithmFactory(256, CipherMode.CBC, PaddingMode.PKCS7))
                         ),
                         CompressionLevel.Optimal
                     ),
-                    new RSASignatureAlgorithm(
-                        new RSACryptoServiceProvider(),
-                        new SHA1Managed()
-                    )
+                    client,
+                    serverIdentityVerifier
                 );
 
                 Console.WriteLine("CLIENT: Attempting to connect to server... (" + (i + 1) + ")");
@@ -110,8 +123,10 @@ namespace ReliableIMClient
 
                 Console.WriteLine("CLIENT: Connected to server.");
 
-                //Hold connection.
-                while (clientSocket.IsConnected());
+                while (clientSocket.IsConnected())
+                {
+                    
+                }
 
                 Console.WriteLine("CLIENT: Disconnected.");
                 break;

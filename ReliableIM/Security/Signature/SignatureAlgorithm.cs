@@ -1,4 +1,5 @@
 ﻿using ReliableIM.Network.Protocol;
+using ReliableIM.Security.Signature.DSA;
 using ReliableIM.Security.Signature.RSA;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace ReliableIM.Security.Signature
             PacketFactory factory = new PacketFactory();
 
             factory.RegisterPacket(1, typeof(RSASignatureAlgorithm));
+            factory.RegisterPacket(2, typeof(DSASignatureAlgorithm));
 
             return new PacketProtocol(factory);
         }
@@ -29,6 +31,14 @@ namespace ReliableIM.Security.Signature
         public abstract Signature Sign(byte[] data);
 
         /// <summary>
+        /// Gets a flag indicating whether or not this signature algorithm is capable of signing messages.
+        /// </summary>
+        public abstract bool CanSign
+        {
+            get;
+        }
+
+        /// <summary>
         /// Verifies the given signature.
         /// </summary>
         /// <param name="signature">Signature to check.</param>
@@ -38,13 +48,23 @@ namespace ReliableIM.Security.Signature
         /// <summary>
         /// Gets the public identity of this signer.
         /// </summary>
-        /// <returns>Public identifier.</returns>
-        public abstract Identity GetIdentity();
+        public abstract Identity Identity
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the name of this signature algorithm.
         /// </summary>
-        /// <returns>Algorithm name.</returns>
-        public abstract string GetName();
+        public abstract string Name
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Creates an identity verifier for this signature algorithm.
+        /// </summary>
+        /// <returns>An identity verifier capable of verifying this signer's identity.</returns>
+        public abstract IIdentityVerifier CreateIdentityVerifier();
     }
 }

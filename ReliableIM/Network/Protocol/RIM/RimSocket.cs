@@ -26,6 +26,8 @@ namespace ReliableIM.Network.Protocol.RIM
             factory.RegisterPacket(3, typeof(Packet3IdentityResponse));
             factory.RegisterPacket(4, typeof(Packet4Signature));
 
+            factory.RegisterPacket(100, typeof(Packet100ContactStatus));
+
             factory.RegisterPacket(255, typeof(Packet255Disconnect));
 
             return new PacketProtocol(factory);
@@ -34,6 +36,7 @@ namespace ReliableIM.Network.Protocol.RIM
         private Socket baseSocket;
         private PacketBuffer packetBuffer;
         private readonly SignatureAlgorithm signatureAlgorithm;
+        private readonly IIdentityVerifier identityVerifier;
 
         /// <summary>
         /// Creates a new RIM (Reliable IM) socket. This layer does not provide
@@ -42,16 +45,18 @@ namespace ReliableIM.Network.Protocol.RIM
         /// 
         /// A typical protocol stack is as follows:
         ///     Application layer: RIM
-        ///     Security layer:    SSL
+        ///     Security layer:    SSL/ESL
         ///     Transport layer:   UDT/UDP or TCP
         ///     Network layer:     IP
         /// </summary>
         /// <param name="baseSocket">Base socket to reference.</param>
         /// <param name="signatureAlgorithm">Signature algorithm to reference.</param>
-        public RimSocket(Socket baseSocket, SignatureAlgorithm signatureAlgorithm)
+        /// <param name="identityVerifier">Identity verifier to use when verifying peers.</param>
+        public RimSocket(Socket baseSocket, SignatureAlgorithm signatureAlgorithm, IIdentityVerifier identityVerifier)
         {
             this.baseSocket = baseSocket;
             this.signatureAlgorithm = signatureAlgorithm;
+            this.identityVerifier = identityVerifier;
         }
 
         public override bool IsConnected()
@@ -79,7 +84,7 @@ namespace ReliableIM.Network.Protocol.RIM
 
             //Ensure this socket is handling an unauthorized peer. Using an authorized handler would be
             //a serious mistake.
-            PacketHandler = new RimPacketHandlerUnauthorized(this, signatureAlgorithm);
+            PacketHandler = new RimPacketHandlerUnauthorized(this, signatureAlgorithm, identityVerifier);
 
             //Start up a new packet buffer.
             packetBuffer = new PacketBuffer(this);

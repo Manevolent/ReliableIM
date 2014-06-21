@@ -28,21 +28,7 @@ namespace ReliableIM.Network.Protocol
 
         public IPacketStream Connect()
         {
-            RimSocket rimSocket = new RimSocket( //Establish a RIM connection.
-                new SslSocket( //Establish an SSL connection. 
-                    proxySocket.CreateSocket(  //Establish a transport-layer connection.
-                        hostname,
-                        DEFAULT_SERVICE_PORT
-                    )
-                ),
-                null //TODO
-            );
-
-            //Authenticate this RIM socket as a peer.
-            rimSocket.AuthenticatePeer();
-
-            //Return the RIM socket, which implements the IPacketStream interface.
-            return rimSocket;
+            throw new NotSupportedException();
         }
     }
 }

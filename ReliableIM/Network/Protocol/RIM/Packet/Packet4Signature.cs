@@ -26,6 +26,9 @@ namespace ReliableIM.Network.Protocol.RIM.Packet
             return 4;
         }
 
+        /// <summary>
+        /// Gets the signature sent with this packet.
+        /// </summary>
         public Signature Signature
         {
             get

@@ -37,6 +37,12 @@ namespace ReliableIM.Network.Protocol.RIM.Handler
                     case 3:
                         HandleIdentityResponse((Packet3IdentityResponse)packet);
                         break;
+                    case 4:
+                        HandleSignature((Packet4Signature)packet);
+                        break;
+                    case 100:
+                        HandleContactStatus((Packet100ContactStatus)packet);
+                        break;
                     case 255:
                         HandleDisconnect((Packet255Disconnect)packet);
                         break;
@@ -105,6 +111,10 @@ namespace ReliableIM.Network.Protocol.RIM.Handler
             Disconnect(Packet255Disconnect.DisconnectReason.UnexpectedPacket);
         }
         protected virtual void HandleSignature(Packet4Signature signature)
+        {
+            Disconnect(Packet255Disconnect.DisconnectReason.UnexpectedPacket);
+        }
+        protected virtual void HandleContactStatus(Packet100ContactStatus contactStatus)
         {
             Disconnect(Packet255Disconnect.DisconnectReason.UnexpectedPacket);
         }
